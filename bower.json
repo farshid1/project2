@@ -5,6 +5,7 @@
     "bootstrap": "latest",
     "angular": "latest",
     "angular-route": "latest",
-    "jquery": "~2.1.0"
+    "jquery": "~2.1.0",
+    "angular-bootstrap": "~0.11.0"
   }
 }
