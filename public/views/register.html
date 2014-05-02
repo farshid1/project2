@@ -1,0 +1,35 @@
+<form id="AddUser" role="form" method="post" action="/adduser">
+  <table>
+  <tr>
+  	<td><label>Enter User Name</label></td>
+  	<td> <input type="text" placeholder="username" name="username"/><td>
+  </tr>	
+  <tr>
+  	<td><label for="useremail">Enter Email Address</label></td>
+    <td><input id="inputUserEmail" type="text" placeholder="user email" name="useremail" /></td>
+  <tr>
+ 	<td><label for="userpassword">Enter Password</label></td>
+    <td><input id="inputUserPassword" type="password" placeholder="user password" name="userpassword"/></td>
+  </tr>	
+  <tr>	
+	<td><label for="userpasswordvalid">Confirm Password</label></td>
+    <td><input id="inputUserPasswordValid" type="password" placeholder="confirm user password" name="userpasswordvalid"/></td>
+  </tr>
+  	<td><label for="status">Enter Status</label></td>
+    <td><select name="status">
+      <option value="Initialized" selected="selected">Initialized</option>
+      <option value="Active">Active</option>
+      <option value="Locked Out">Locked Out</option>
+    </select></td>
+  <tr>	
+ 	<td><label for="role">Enter Role</label></td>
+    <td><select name="role">
+      <option value="Admin">Admin</option>
+      <option value="Sales">Sales</option>
+      <option value="Inventory" selected="selected">Inventory</option>
+    </select></td>
+  </tr>
+  <tr><td><button id="btnSubmit" type="submit">submit</button></td>
+  </tr>
+</table>
+</form>

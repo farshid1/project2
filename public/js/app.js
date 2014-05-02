@@ -1,0 +1,1 @@
+angular.module('inventoryApp', ['ngRoute', 'appRoutes',  'UserCtrl', 'InventoryCtrl', 'InventoryService', 'UserService']);

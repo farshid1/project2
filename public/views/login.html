@@ -1,0 +1,19 @@
+  
+<h1>Login Here</h1>
+<form id="AddUser" role="form" >
+  <table>
+  <tr>
+    <td><label>Enter User Name </label></td>
+    <td><input type="text" placeholder="username"  class="form-control" ng-model="user.username"/></td>
+  </tr>
+  <tr>
+      <td><label for="userpassword">Enter Password</label></td>
+      <td><input id="inputUserPassword" type="password" placeholder="userpassword" ng-model="user.password"  class="form-control"/></td>
+  </tr>
+  <tr>
+    <td><button id="btnReset" type="submit">Reset</button></td> 
+    <td><button id="btnSubmit" type="submit" ng-click="submit(user)">submit</button></td>
+    
+  </tr>
+  </table>
+</form>

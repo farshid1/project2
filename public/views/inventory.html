@@ -1,0 +1,57 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2">
+      <!--Sidebar content-->
+
+      Search: <input ng-model="query" ng-change="searchItem(query)">
+
+    </div>
+    <div class="col-md-10">
+      <!--Body content-->
+
+      <ul class="phones">
+        <li ng-repeat="product in inventory | filter:query | orderBy:orderProp"
+            class="thumbnail phone-listing">
+          <a href="#/phones/{{phone.id}}" class="thumb"><img ng-src="{{phone.imageUrl}}"></a>
+          <a href="#/phones/{{phone.id}}">{{phone.name}}</a>
+          <p>{{phone.snippet}}</p>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+
+
+
+      <form id="AddUser" role="form" method="post" >
+        <table width="599" height="527">
+        <tr>
+          <td width="120"><label>Enter UPC</label></td>
+          <td width="144"> <input type="text" placeholder="Enter 13 digit number here" ng-model="newItem.upc" size=""/></td>
+        </tr> 
+        <tr>
+          <td><label for="productName">Item/Product Name</label></td>
+          <td><input id="productId" type="text" placeholder="Enter Product Name here" ng-model="newItem.productName" /></td>
+        </tr>
+        <tr>
+          <td>Current Quantity</td>
+          <td><input id="quantity" type="text" placeholder="Enter No of Itemns/Products here" ng-model="newItem.quantity"/></td>
+        </tr>
+        <tr>
+          <td>Price</td>
+          <td><input id="quantity" type="text" placeholder="Enter Price" ng-model="newItem.price"/></td>
+        </tr> 
+        
+       
+        <tr><td><button id="btnSubmit" ng-click="addItem(newItem)">Add</button></td>
+        <td><button id="btnReset" ng-click="reset()">Reset</button></td>
+        </tr>
+      </table>
+    </form>
+
+
+    </div>
+  </div>
+</div>
