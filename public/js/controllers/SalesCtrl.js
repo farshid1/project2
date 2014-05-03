@@ -1,37 +1,39 @@
-angular.module('SalesCtrl', ['SalesService']).controller('SalesController', function ($scope, SalesService) {
-  $scope.inventory = {};
-  $scope.newItem = {};
+angular.module('SalesCtrl', ['SalesService'])
+.controller('SalesController', function ($scope, SalesService) {
+  
+  $scope.inventory = [];
+  $scope.newCustomer = {};
+  $scope.editCustomer = {};
+  $scope.numLimit = 10;
+  $scope.showAddCustomer = false;
+  $scope.showEditCustomer = false;
+  $scope.showResult = false;
 
-  $scope.searchItem = function(query) {
-    SalesService.getProduct(query)
+  $scope.searchItem = function() {
+    SalesService.getProducts($scope.query)
     .then(
-      function(r) {
-        console.log(r.data);
-        
-        $scope.inventory = angular.copy(r.data);
+      function(response) {
+        console.log(response.data);
+        $scope.showResult = true;
+        $scope.inventory = angular.copy(response.data);
         //alert('data loaded');
       },
       function () {
-
         alert('failed');
       }
     );
   };
 
-  $scope.addItem = function(newItem) {
-    InventoryService.addItem(newItem)
-    .then(
-      function(r) {
-        console.log(r.data);
-        
-        //$scope.inventory = angular.copy(r.data);
-        alert('item saved');
-      },
-      function () {
 
-        alert('failed');
-      }
-    );
+  $scope.showAddCustomerForm = function() {
+    $scope.showAddCustomer = true;
   };
+
+  $scope.showEditCustomerForm = function(item) {
+    $scope.showEditCustomer = true;
+    console.log(item);
+    $scope.editCustomer.upc = item;
+  };
+  
   
 });

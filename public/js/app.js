@@ -1,1 +1,2 @@
-angular.module('inventoryApp', ['ngRoute', 'appRoutes', 'ui.bootstrap', 'UserCtrl', 'InventoryCtrl', 'InventoryService', 'UserService']);
+angular.module('inventoryApp', 
+	['ngRoute', 'appRoutes', 'btford.socket-io', 'ui.bootstrap', 'UserCtrl', 'InventoryCtrl', 'SalesCtrl', 'InventoryService', 'SalesService', 'UserService', 'mySocket']);

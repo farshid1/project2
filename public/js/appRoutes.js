@@ -4,8 +4,8 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
 
 		// home page
 		.when('/', {
-			templateUrl: 'views/dashboard.html',
-			controller: 'MainController'
+			templateUrl: 'views/inventory.html',
+			controller: 'InventoryController'
 		})
 
 		.when('/login', {
@@ -18,9 +18,9 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
 			controller: 'UserController'	
 		})
 
-		.when('/dashboard', {
-			templateUrl: 'views/dashboard.html',
-			controller: 'MainController'	
+		.when('/sales', {
+			templateUrl: 'views/sales.html',
+			controller: 'SalesController'	
 		})
 
 		.when('/inventory', {

@@ -1,6 +1,7 @@
 'use strict';
 
-angular.module('InventoryService', []).factory('InventoryService',['$http','$q', function( $http, $q) {
+angular.module('SalesService', [])
+.factory('SalesService',['$http','$q', function( $http, $q) {
 
 
 
@@ -15,9 +16,9 @@ angular.module('InventoryService', []).factory('InventoryService',['$http','$q',
 			return $http.jsonp("http://gd.geobytes.com/AutoCompleteCity?callback=JSON_CALLBACK &filter=US&q="+formData);
 
 		},
-		addItem: function(formData) {
+		addCustomer: function(formData) {
 			return $http({
-				url: '/api/inventory/add',
+				url: '/api/user/add',
 				data: JSON.stringify(formData),
 				method: 'POST',
 				header: {'Content-Type':'application/json'}

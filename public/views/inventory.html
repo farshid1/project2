@@ -2,55 +2,121 @@
   <div class="row">
     <div class="col-md-2">
       <!--Sidebar content-->
-      Search: <input ng-model="result" type="text" typeahead="suggestion for suggestion in products($viewValue)">
-      Search: <input ng-model="query" type="text" ng-change="searchItem()">
+      <!-- Search: <input ng-model="result" type="text" typeahead="suggestion for suggestion in products($viewValue)"> -->
+
+      
+      <button class="btn btn-default" ng-click="showAddForm()">
+        <span class="glyphicon glyphicon-plus" ></span>Add Item
+      </button>
 
     </div>
     <div class="col-md-10">
       <!--Body content-->
-
-      <ul class="products">
-        <li ng-repeat="product in inventory | limitTo:numLimit" class="thumbnail phone-listing">
-          {{product}}
-        </li>
-      </ul>
+      <div class="left-inner-addon">
+        <i class="glyphicon glyphicon-search"></i>
+        <input ng-model="query" type="text" ng-change="searchItem()" class="form-control" />
+      </div>
+      
+      <table class="table table-striped" ng-show="showResult">
+        <thead ng-if="showResult">
+          <tr>
+            <th>UPC</th>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Edit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="product in inventory | limitTo:numLimit" >
+              <td>{{product}}</td>
+              <td>{{product}}</td>
+              <td>
+                12
+                <span class="glyphicon glyphicon-plus-sign"></span>
+                <span class="glyphicon glyphicon-minus-sign"></span>
+              </td>
+              <td>{{product}}</td>
+              <td>
+                <button class="btn btn-default" ng-click="showEditForm(product)">
+                  <span class="glyphicon glyphicon-edit" ></span>
+                  Edit
+                </button>
+              </td>
+            
+          </tr>
+        </tbody>
+      </table>
 
     </div>
   </div>
 
 
-  <button  ng-click="showAddForm()"> add item</button>
+ 
   <div class="row">
     <div class="col-md-6">
+      <div ng-show="showEditItem">
+        <form id="EditProduct" role="form"  >
+            <table width="599" height="527">
+            <tr>
+              <td width="120"><label>Enter UPC</label></td>
+              <td width="144"> <input type="text" placeholder="UPC" ng-model="editItem.upc" size=""/></td>
+            </tr> 
+            <tr>
+              <td><label for="productName">Item/Product Name</label></td>
+              <td><input id="productId" type="text" placeholder="Product Name" ng-model="editItem.productName" /></td>
+            </tr>
+            <tr>
+              <td>Current Quantity</td>
+              <td><input id="quantity" type="text" placeholder="Quantity" ng-model="editItem.quantity"/></td>
+            </tr>
+            <tr>
+              <td>Price</td>
+              <td><input id="quantity" type="text" placeholder="Price" ng-model="editItem.price"/></td>
+            </tr> 
+            
+           
+            <tr><td><button id="btnSubmit" ng-click="addItem(editItem)">Edit</button></td>
+            <td><button id="btnReset" ng-click="reset()">Reset</button></td>
+            </tr>
+          </table>
+        </form>
+      </div>
 
-
-  <div class="content" ng-show="showAddItem">
-      <form id="AddUser" role="form"  >
-        <table width="599" height="527">
-        <tr>
-          <td width="120"><label>Enter UPC</label></td>
-          <td width="144"> <input type="text" placeholder="Enter 13 digit number here" ng-model="newItem.upc" size=""/></td>
-        </tr> 
-        <tr>
-          <td><label for="productName">Item/Product Name</label></td>
-          <td><input id="productId" type="text" placeholder="Enter Product Name here" ng-model="newItem.productName" /></td>
-        </tr>
-        <tr>
-          <td>Current Quantity</td>
-          <td><input id="quantity" type="text" placeholder="Enter No of Itemns/Products here" ng-model="newItem.quantity"/></td>
-        </tr>
-        <tr>
-          <td>Price</td>
-          <td><input id="quantity" type="text" placeholder="Enter Price" ng-model="newItem.price"/></td>
-        </tr> 
-        
-       
-        <tr><td><button id="btnSubmit" ng-click="addItem(newItem)">Add</button></td>
-        <td><button id="btnReset" ng-click="reset()">Reset</button></td>
-        </tr>
-      </table>
-    </form>
-  </div>
+      <div class="content" ng-show="showAddItem">
+          <form id="AddProduct" role="form"  >
+            <table width="599" height="527">
+            <tr>
+              <td width="120"><label>Enter UPC</label></td>
+              <td width="144"> <input type="text" placeholder="UPC" ng-model="newItem.upc" size=""/></td>
+            </tr> 
+            <tr>
+              <td><label for="productName">Item/Product Name</label></td>
+              <td><input id="productId" type="text" placeholder="Product Name" ng-model="newItem.productName" /></td>
+            </tr>
+            <tr>
+              <td>Current Quantity</td>
+              <td><input id="quantity" type="text" placeholder="Quantity" ng-model="newItem.quantity"/></td>
+            </tr>
+            <tr>
+              <td>Price</td>
+              <td><input id="quantity" type="text" placeholder="Price" ng-model="newItem.price"/></td>
+            </tr> 
+            <tr>
+              <td>
+                <button class="btn btn-default" ng-click="addItem(newItem)">
+                  <span class="glyphicon glyphicon-plus" ></span>Add
+                </button>
+              </td>
+              <td>
+                <button class="btn btn-default" ng-click="reset()">
+                  <span class="glyphicon glyphicon-asterisk" ></span>Reset
+                </button>
+              </td>
+            </tr>
+          </table>
+        </form>
+      </div>
 
 
     </div>
