@@ -29,14 +29,14 @@
         </thead>
         <tbody>
           <tr ng-repeat="product in inventory | limitTo:numLimit" >
-              <td>{{product}}</td>
-              <td>{{product}}</td>
+              <td>{{typeof(product.name)}}</td>
+              <td>{{product.name}}</td>
               <td>
-                12
+                {{product.onHandQu}}
                 <span class="glyphicon glyphicon-plus-sign"></span>
                 <span class="glyphicon glyphicon-minus-sign"></span>
               </td>
-              <td>{{product}}</td>
+              <td>{{product.price}}</td>
               <td>
                 <button class="btn btn-default" ng-click="showEditForm(product)">
                   <span class="glyphicon glyphicon-edit" ></span>
@@ -64,7 +64,7 @@
             </tr> 
             <tr>
               <td><label for="productName">Item/Product Name</label></td>
-              <td><input id="productId" type="text" placeholder="Product Name" ng-model="editItem.productName" /></td>
+              <td><input id="productId" type="text" placeholder="Product Name" ng-model="editItem.name" /></td>
             </tr>
             <tr>
               <td>Current Quantity</td>
@@ -72,7 +72,7 @@
             </tr>
             <tr>
               <td>Price</td>
-              <td><input id="quantity" type="text" placeholder="Price" ng-model="editItem.price"/></td>
+              <td><input id="price" type="text" placeholder="Price" ng-model="editItem.price"/></td>
             </tr> 
             
            
@@ -92,7 +92,7 @@
             </tr> 
             <tr>
               <td><label for="productName">Item/Product Name</label></td>
-              <td><input id="productId" type="text" placeholder="Product Name" ng-model="newItem.productName" /></td>
+              <td><input id="productId" type="text" placeholder="Product Name" ng-model="newItem.name" /></td>
             </tr>
             <tr>
               <td>Current Quantity</td>

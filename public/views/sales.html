@@ -1,25 +1,47 @@
 <div class="container-fluid">
 
-  <div class="row">
-    <div class="col-md-4">
+  <div class="row row-centered">
+    <div class="col-md-6">
       <!--Sidebar content-->
       
       <div class="well">
         <div class="left-inner-addon">
           <i class="glyphicon glyphicon-search"></i>
-          <input ng-model="customerQuery" type="text" ng-change="searchCustomer()" class="form-control" />
+          <input ng-model="customerQuery" type="text" 
+                 typeahead="suggestion for suggestion in searchCustomers($viewValue)"
+                 typeahead-editable="false"
+                 typeahead-on-select="addCustomerToInvoice(customerQuery)"  
+                 class="form-control" 
+          />
         </div>
-        <ul class="list-group">
+        <!-- <ul class="list-group">
             <li class="list-group-item"><a ng-click="showAddCustomerForm()">Add Customer</a></li>
-        </ul>
+        </ul> -->
       </div>
 
     </div>
+  </div>
+
+  <div class="row">
     <div class="well col-md-8">
       <!--Search Items -->
-      <div class="left-inner-addon">
-        <i class="glyphicon glyphicon-search"></i>
-        <input ng-model="query" type="text" ng-change="searchItem()" class="form-control" />
+      <!-- Single button -->
+      <div class="row"> 
+        <div class="dropdown btn-group">
+          <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+              Search By
+              <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu">
+              <li><a>UPC</a></li>
+              <li><a>Name</a></li>
+          </ul>
+        </div>
+
+        <div class="left-inner-addon">
+          <i class="glyphicon glyphicon-search"></i>
+          <input ng-model="query" type="text" ng-change="searchItem()" class="form-control" />
+        </div>
       </div>
 
 
@@ -30,23 +52,23 @@
             <th>Name</th>
             <th>Quantity</th>
             <th>Price</th>
-            <th>Edit</th>
+            <th>Add</th>
           </tr>
         </thead>
         <tbody>
           <tr ng-repeat="product in inventory | limitTo:numLimit" >
-              <td>{{product}}</td>
-              <td>{{product}}</td>
+              <td>{{product.upc}}</td>
+              <td>{{product.name}}</td>
               <td>
-                12
+                {{product.onHandQu}}
                 <span class="glyphicon glyphicon-plus-sign"></span>
                 <span class="glyphicon glyphicon-minus-sign"></span>
               </td>
-              <td>{{product}}</td>
+              <td>{{product.price}}</td>
               <td>
-                <button class="btn btn-default" ng-click="showEditCustomerForm(product)">
-                  <span class="glyphicon glyphicon-edit" ></span>
-                  Edit
+                <button class="btn btn-default" ng-click="addProductToInvoice(product)">
+                  <span class="glyphicon glyphicon-plus-sign" ></span>
+                  Add
                 </button>
               </td>
             
@@ -59,8 +81,8 @@
   </div>
 
 
-<!--   <button  ng-click="showAddCustomerForm()" class="btn btn-default"> add item</button>
- -->  
+  <button  ng-click="showAddCustomerForm()" class="btn btn-default"> add item</button>
+  
  <div class="row">
   <div class="col-md-6">
 
@@ -112,6 +134,13 @@
           <label class="col-md-4 control-label" for="address">Address</label>
           <div class="col-md-4">                     
             <textarea class="form-control" ng-model="newCustomer.address"></textarea>
+          </div>
+        </div>
+
+        <!-- Button -->
+        <div class="form-group">
+          <div class="col-md-4">
+            <button  ng-click="addCustomer(newCustomer)" class="btn btn-primary">Submit</button>
           </div>
         </div>
 

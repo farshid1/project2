@@ -1,5 +1,5 @@
 var mongoose = require('mongoose'),
-Schema = mongoose.Schema;
+    Schema = mongoose.Schema;
 var salesSchema = new Schema({
     salesPersonId: Number,
     comments: String,
@@ -8,10 +8,10 @@ var salesSchema = new Schema({
     date: Date,
     state: Number,
     products: [{
-    	upc: Number,
-        name: String,
-    	quantity: Number,
-        price: Number
+        upc: { type :Number},
+        name: {type :String},
+        quantity: {type :Number},
+        price: {type :Number}
     }]
 });
 

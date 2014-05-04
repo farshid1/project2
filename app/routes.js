@@ -20,15 +20,16 @@ module.exports = function(app) {
 	app.post('/api/inventory/addQuantity', user.isAuthenticated, inventory.addQuantity);
 	app.post('/api/inventory/searchItem', user.isAuthenticated, inventory.searchItem);
 	
-
 	//Sales routes : 
-	app.post('/api/sales/addToCart', user.isAuthenticated, sales.addToCart);
-	app.post('/api/sales/searchCustomer', user.isAuthenticated, sales.searchCustomer);
-	app.post('/api/sales/addNewCustomer', user.isAuthenticated, sales.addNewCustomer);
-	app.post('/api/sales/editCustomer', user.isAuthenticated, sales.editCustomer);
+	app.post('/api/sales/addToCart', user.isAuthenticated,sales.addToCart);
+	app.post('/api/sales/searchCustomer', user.isAuthenticated,sales.searchCustomer);
+	app.post('/api/sales/addNewCustomer', user.isAuthenticated,sales.addNewCustomer);
+	app.post('/api/sales/editCustomer', user.isAuthenticated,sales.editCustomer);
+
+
 	
-	app.post('/api/sales/searchProduct', user.isAuthenticated, sales.seachProduct);
-	app.post('/api/sales/FinalizeInvoice',user.isAuthenticated, sales.FinalizeInvoice);
+	//app.post('/api/sales/searchProduct',user.isAuthenticated, sales.seachProduct);
+	app.post('/api/sales/FinalizeInvoice',user.isAuthenticated ,sales.FinalizeInvoice);
 	
 	// frontend routes =========================================================
 	// route to handle all angular requests

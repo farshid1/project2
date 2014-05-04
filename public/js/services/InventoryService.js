@@ -17,7 +17,7 @@ angular.module('InventoryService', []).factory('InventoryService',['$http','$q',
 		},
 		addItem: function(formData) {
 			return $http({
-				url: '/api/inventory/add',
+				url: '/api/inventory/addItem',
 				data: JSON.stringify(formData),
 				method: 'POST',
 				header: {'Content-Type':'application/json'}

@@ -33,8 +33,8 @@ function createUser(req){
    phone = req.body.phoneNumber,
    urole = req.body.role;
 
-    User.insert({email: user, password : pass, firstName :first, lastName: last, phoneNumber :phone,
-      role: urole}, function(error, doc){});
+    User.save({email: user, password : pass, firstName :first, lastName: last, phoneNumber :phone,
+      role: urole}, function(error, doc){if (err) {throw err;}});
   
   return;
 }
@@ -86,8 +86,8 @@ exports.login = function(req, res) {
 
 exports.update = function(req,res){
   var uid = req.session.uid,
-      user=req.body.user,
-      pass =req.body.pass,
+      user=req.body.username,
+      pass =req.body.password,
    first = req.body.firstName,
    last = req.body.lastName,
    phone = req.body.phoneNumber;
@@ -106,7 +106,7 @@ exports.update = function(req,res){
         { _id: uid }, document, {safe: true}, function(err, doc) {
           if (err) throw err;
           console.log("Record updated as " + doc);
-          res.redirect('/dashboard');
+          res.jsonp({message: "The user has benn updated"});
           //db.close();
         });
     } else {
@@ -136,3 +136,5 @@ exports.isAuthenticated = function(req, res, next){
     next();
   }
 }
+
+
