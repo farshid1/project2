@@ -6,13 +6,13 @@ angular.module('InventoryService', []).factory('InventoryService',['$http','$q',
 
 	return { 
 		getProducts: function(formData) {
-			// return $http({
-			// 	url: '/api/inventory/search',
-			// 	data: JSON.stringify(formData),
-			// 	method: 'POST',
-			// 	header: {'Content-Type':'application/json'}
-			// });
-			return $http.jsonp("http://gd.geobytes.com/AutoCompleteCity?callback=JSON_CALLBACK &filter=US&q="+formData);
+			return $http({
+				url: '/api/inventory/searchItem',
+				data: JSON.stringify(formData),
+				method: 'POST',
+				header: {'Content-Type':'application/json'}
+			});
+			//return $http.jsonp("http://gd.geobytes.com/AutoCompleteCity?callback=JSON_CALLBACK &filter=US&q="+formData);
 
 		},
 		addItem: function(formData) {

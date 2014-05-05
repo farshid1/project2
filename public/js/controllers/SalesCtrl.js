@@ -13,6 +13,7 @@ angular.module('SalesCtrl', ['SalesService'])
   $scope.showEditCustomer = false;
   $scope.showResult = false;
   $scope.showInvoice = false;
+  $scope.disableAddButton = false;
 
   $scope.searchCustomers = function(customer) {
       console.log(customer);
@@ -94,6 +95,7 @@ angular.module('SalesCtrl', ['SalesService'])
   $scope.addProductToInvoice = function(product) {
     
     $scope.showInvoice = true;
+    $scope.disableAddButton = true;
     $scope.items.push(product);
     console.log($scope.items);
 
@@ -110,6 +112,8 @@ angular.module('SalesCtrl', ['SalesService'])
     //   }
     // );
   };
-  
+  $scope.disableButton = function() {
+    return false;
+  };
   
 });
