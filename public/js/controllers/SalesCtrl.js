@@ -2,6 +2,7 @@ angular.module('SalesCtrl', ['SalesService'])
 .controller('SalesController', function ($scope, $http, limitToFilter, SalesService) {
   
   $scope.inventory = [];
+  $scope.items = [];
   $scope.newCustomer = {};
   $scope.editCustomer = {};
   $scope.customerId = '';
@@ -11,28 +12,26 @@ angular.module('SalesCtrl', ['SalesService'])
   $scope.showAddCustomer = false;
   $scope.showEditCustomer = false;
   $scope.showResult = false;
+  $scope.showInvoice = false;
 
   $scope.searchCustomers = function(customer) {
-    //return $http.jsonp("http://gd.geobytes.com/AutoCompleteCity?callback=JSON_CALLBACK &filter=US&q="+customer).then(function(response){
-      //console.log(customer);
-      SalesService.getCustomers(customer)
-      .then(
-        function(response) {
-          //$scope.customers = angular.copy(response.data);
-          console.log(response.data);
-          if (response.data.message) {
-            console.log(response.data.message);
+      console.log(customer);
+        SalesService.getCustomers(customer)
+        .then(
+          function(response) {
+            if (response.data.message) {
+              console.log(response.data.message);
+            }
+            else {
+              //$scope.customers = angular.copy(response.data.message);
+              $scope.searchCustomers = limitToFilter(response.data, 10);
+            }
+            
+          },
+          function(response) {
+            console.log(response.data);
           }
-          else {
-            return limitToFilter(response.data, 10);
-          }
-          
-        },
-        function(response) {
-          console.log(response.data);
-        }
-      )
-      // $scope.customerId = response.data[3].customerId;
+        );
   };
 
   $scope.addCustomerToInvoice = function(customerID) {
@@ -44,7 +43,7 @@ angular.module('SalesCtrl', ['SalesService'])
       function(response) {
 
       }
-    )
+    );
   };
 
   $scope.addCustomer= function(formData) {
@@ -62,7 +61,7 @@ angular.module('SalesCtrl', ['SalesService'])
       function(response) {
 
       }
-    )
+    );
   };
 
   $scope.searchItem = function() {
@@ -93,18 +92,23 @@ angular.module('SalesCtrl', ['SalesService'])
   };
 
   $scope.addProductToInvoice = function(product) {
-    SalesService.addToCart(product)
-    .then(
-      function(response) {
-        //console.log(response.data);
-        $scope.showResult = true;
-        $scope.inventory = angular.copy(response.data);
-        //alert('data loaded');
-      },
-      function () {
-        alert('failed');
-      }
-    )
+    
+    $scope.showInvoice = true;
+    $scope.items.push(product);
+    console.log($scope.items);
+
+    // SalesService.addToCart(product)
+    // .then(
+    //   function(response) {
+    //     //console.log(response.data);
+    //     $scope.showInvoice = true;
+    //     $scope.inventory = angular.copy(response.data);
+    //     //alert('data loaded');
+    //   },
+    //   function () {
+    //     alert('failed');
+    //   }
+    // );
   };
   
   

@@ -10,7 +10,8 @@
           <input ng-model="customerQuery" type="text" 
                  typeahead="suggestion for suggestion in searchCustomers($viewValue)"
                  typeahead-editable="false"
-                 typeahead-on-select="addCustomerToInvoice(customerQuery)"  
+                 typeahead-on-select="addCustomerToInvoice($item)"
+                 typeahead-min-length="3"  
                  class="form-control" 
           />
         </div>
@@ -81,7 +82,7 @@
   </div>
 
 
-  <button  ng-click="showAddCustomerForm()" class="btn btn-default"> add item</button>
+  <button  ng-click="showAddCustomerForm()" class="btn btn-default"> Add Customer</button>
   
  <div class="row">
   <div class="col-md-6">
@@ -206,6 +207,36 @@
     </div>
 
 
+    </div>
+  </div>
+
+
+  <div class="row" ng-if="showInvoice">
+    <div class="col-md-3">
+      
+    </div>
+    <div class="col-md-6">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>UPC</th>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="i in items">
+            <td>{{i.upc}}</td>
+            <td>{{i.name}}</td>
+            <td>{{i.quantity}}</td>
+            <td>{{i.price}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-md-3">
+      
     </div>
   </div>
 </div>
