@@ -15,6 +15,9 @@ angular.module('SalesCtrl', ['SalesService'])
   $scope.showInvoice = false;
   $scope.disableAddButton = false;
 
+
+
+  //$scope.checkUpc = function()
   $scope.searchCustomers = function(customer) {
       console.log(customer);
         SalesService.getCustomers(customer)
@@ -115,5 +118,42 @@ angular.module('SalesCtrl', ['SalesService'])
   $scope.disableButton = function() {
     return false;
   };
+
+
+
+
+
+
+
+
+
+  $scope.checkName = function(data, id) {
+    if (id === 2 && data !== 'awesome') {
+      return "Username 2 should be `awesome`";
+    }
+  };
+
+  $scope.saveItem = function(data, id) {
+    //$scope.user not updated yet
+    angular.extend(data, {id: id});
+    return $http.post('/saveUser', data);
+  };
+
+  // remove user
+  $scope.removeItem = function(index) {
+    $scope.users.splice(index, 1);
+  };
+
+  // add user
+  $scope.addItem = function() {
+    $scope.inserted = {
+      id: $scope.users.length+1,
+      name: '',
+      status: null,
+      group: null 
+    };
+    $scope.users.push($scope.inserted);
+  };
+
   
 });
