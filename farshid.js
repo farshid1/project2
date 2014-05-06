@@ -27,7 +27,7 @@ app.configure(function() {
 });
 
 // routes ==================================================
-require('./app/routes')(app); // pass our application into our routes
+require('./app/routes')(app, io); // pass our application into our routes
 
 // start app ===============================================
 
@@ -57,7 +57,7 @@ user.findOne({ role: 1 },"email firstName lastName", function (err, userResult) 
 io.sockets.on('connection', function (socket) {
 	console.log('connected*******************');
   socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
+  socket.on('new:item', function (data) {
     console.log(data);
   });
 });

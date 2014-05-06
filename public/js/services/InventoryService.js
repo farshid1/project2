@@ -8,7 +8,8 @@ angular.module('InventoryService', []).factory('InventoryService',['$http','$q',
 		getProducts: function(formData) {
 			return $http({
 				url: '/api/inventory/searchItem',
-				data: JSON.stringify(formData),
+				data: {creteriaFE: formData},
+				//data: JSON.stringify(formData),
 				method: 'POST',
 				header: {'Content-Type':'application/json'}
 			});
@@ -18,6 +19,14 @@ angular.module('InventoryService', []).factory('InventoryService',['$http','$q',
 		addItem: function(formData) {
 			return $http({
 				url: '/api/inventory/addItem',
+				data: JSON.stringify(formData),
+				method: 'POST',
+				header: {'Content-Type':'application/json'}
+			});
+		},
+		editItem: function(formData) {
+			return $http({
+				url: '/api/inventory/editItem',
 				data: JSON.stringify(formData),
 				method: 'POST',
 				header: {'Content-Type':'application/json'}

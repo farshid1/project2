@@ -9,7 +9,7 @@ angular.module('SalesService', [])
 		getProducts: function(formData) {
 			return $http({
 				url: '/api/inventory/searchItem',
-				data: {creteriaFE: formData},
+				data: {creteria: formData},
 				method: 'POST',
 				header: {'Content-Type':'application/json'}
 			});

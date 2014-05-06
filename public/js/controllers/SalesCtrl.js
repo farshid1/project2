@@ -1,8 +1,14 @@
 angular.module('SalesCtrl', ['SalesService'])
 .controller('SalesController', function ($scope, $http, limitToFilter, SalesService) {
   
-  $scope.inventory = [];
-  $scope.items = [];
+  //http://stackoverflow.com/questions/1187518/javascript-array-difference
+  // Array.prototype.diff = function(a) {
+  //   return this.filter(function(i) {return a.indexOf(i) < 0;});
+  // };
+
+
+  $scope.products = [];
+  $scope.orders = [];
   $scope.newCustomerMaster = {};
   $scope.editCustomer = {};
   $scope.customerId = '';
@@ -12,7 +18,7 @@ angular.module('SalesCtrl', ['SalesService'])
   $scope.showAddCustomer = false;
   $scope.showEditCustomer = false;
   $scope.showResult = false;
-  $scope.showInvoice = false;
+  $scope.showOrder = false;
   $scope.disableAddButton = false;
 
 
@@ -83,19 +89,43 @@ angular.module('SalesCtrl', ['SalesService'])
     $scope.newCustomer = angular.copy($scope.newCustomerMaster);
   };
   $scope.searchItem = function() {
-    console.log($scope.query.length);
+    //console.log($scope.query);
     if($scope.query.length > 1) {
       SalesService.getProducts($scope.query)
       .then(
         function(response) {
-          //console.log(typeof(response.data));
-          console.log(response.data.length,"response length");
-          if(response.data.length !== 0) {
-            $scope.showResult = true;
-            $scope.inventory = angular.copy(response.data);
-          }
+          console.log(_.difference(angular.fromJson(angular.toJson(response.data)), angular.fromJson(angular.toJson($scope.orders))));
+          // console.log(angular.toJson($scope.orders), " orders to Json");
+          // console.log(angular.toJson(response.data), " response to Json");
+
+          // console.log(angular.fromJson(angular.toJson($scope.orders)), " orders from Json");
+          // console.log(angular.fromJson(angular.toJson(response.data)), " response to Json");
+          //console.log(_.difference(response.data, angular.toJson($scope.orders)));
+          $scope.showResult = true;
+          $scope.products = angular.copy(_.difference(angular.fromJson(angular.toJson(response.data)), angular.fromJson(angular.toJson($scope.orders))));
+          //console.log($scope.products);
+
+          // if($scope.orders.length === 0 && response.data.length > 0) {
+          //   $scope.products = angular.copy(response.data);
+          // }
+          // else {
+          //   if(response.data.length > 0) {
+          //     console.log("what up");
+          //     for(var i = 0; i < response.data.length; i++) {
+
+                
+          //       for(var j = 0; j < $scope.orders.length; j++) {
+          //         if($scope.orders[j].upc !== response.data[i].upc) {
+          //           $scope.showResult = true;
+          //           $scope.orders.push(response.data[i])
+          //         }
+          //       }
+                
+          //     }
+          //   }
+          // }
+            
           
-          //alert('data loaded');
         },
         function () {
           alert('failed');
@@ -118,28 +148,29 @@ angular.module('SalesCtrl', ['SalesService'])
     $scope.editCustomer.upc = item;
   };
 
-  $scope.addProductToInvoice = function($item) {
+  $scope.addProductToOrder = function($item) {
     
-    var newItem = {
-      customerId: $scope.customer._id,
-      comment: "",
-      totalPrice: $item.price,
-      upc: $item.price,
-      productName: $item.name,
-      quantity: $item.quantity
-    };
-    console.log($item);
-    $scope.showInvoice = true;
+    // var newItem = {
+    //   customerId: $scope.customer._id,
+    //   comment: "",
+    //   totalPrice: $item.price,
+    //   upc: $item.price,
+    //   productName: $item.name,
+    //   quantity: $item.onHandQu
+    // };
+    //console.log($item);
+    $scope.showOrder = true;
     $scope.disableAddButton = true;
-    $scope.items.push($item);
-    console.log($scope.items);
+    $scope.orders.push($item);
+    //console.log($scope.orders);
 
     SalesService.addToOrder($item)
     .then(
       function(response) {
         //console.log(response.data);
-        $scope.showInvoice = true;
-        $scope.inventory = angular.copy(response.data);
+        $scope.showResult = false;
+        $scope.showOrder = true;
+        //$scope.orders.push(response.data);
         //alert('data loaded');
       },
       function () {

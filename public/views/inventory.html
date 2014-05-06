@@ -33,8 +33,11 @@
               <td>{{product.name}}</td>
               <td>
                 {{product.onHandQu}}
-                <span class="glyphicon glyphicon-plus-sign"></span>
-                <span class="glyphicon glyphicon-minus-sign"></span>
+                <span 
+                  class="glyphicon glyphicon-plus-sign" 
+                  ng-click="increment(product)">
+                </span>
+                <span class="glyphicon glyphicon-minus-sign" ng-click="decrement(product)"></span>
               </td>
               <td>{{product.price}}</td>
               <td>
@@ -84,62 +87,38 @@
       </div>
 
       <div class="content" ng-show="showAddItem">
-
-
-
-        <form class="form-horizontal">
-          <fieldset>
-
-          <!-- Form Name -->
-          <legend>Add Product</legend>
-
-          <!-- Text input-->
-          <div class="form-group">
-            <label class="col-md-4 control-label" for="upc">Product UPC</label>  
-            <div class="col-md-4">
-            <input id="upc" name="upc" type="text" placeholder="Enter UPC" class="form-control input-md">
-              
-            </div>
-          </div>
-
-          <!-- Text input-->
-          <div class="form-group">
-            <label class="col-md-4 control-label" for="name">Product Name</label>  
-            <div class="col-md-4">
-            <input id="name" name="name" type="text" placeholder="Enter Name" class="form-control input-md">
-              
-            </div>
-          </div>
-
-          <!-- Text input-->
-          <div class="form-group">
-            <label class="col-md-4 control-label" for="quantity">Product Quantity</label>  
-            <div class="col-md-4">
-            <input id="quantity" name="quantity" type="text" placeholder="Enter Quantity" class="form-control input-md">
-              
-            </div>
-          </div>
-
-          <!-- Text input-->
-          <div class="form-group">
-            <label class="col-md-4 control-label" for="price">Product Price</label>  
-            <div class="col-md-4">
-            <input id="price" name="price" type="text" placeholder="Enter Price" class="form-control input-md">
-              
-            </div>
-          </div>
-
-          <!-- Button -->
-          <div class="form-group">
-            <label class="col-md-4 control-label" for="addproduct"></label>
-            <div class="col-md-4">
-              <button id="addproduct" name="addproduct" class="btn btn-primary">Add Product</button>
-            </div>
-          </div>
-
-          </fieldset>
+          <form id="AddProduct" role="form"  >
+            <table width="599" height="527">
+            <tr>
+              <td width="120"><label>Enter UPC</label></td>
+              <td width="144"> <input type="text" placeholder="UPC" ng-model="newItem.upc" size=""/></td>
+            </tr> 
+            <tr>
+              <td><label for="productName">Item/Product Name</label></td>
+              <td><input id="productId" type="text" placeholder="Product Name" ng-model="newItem.name" /></td>
+            </tr>
+            <tr>
+              <td>Current Quantity</td>
+              <td><input id="quantity" type="text" placeholder="Quantity" ng-model="newItem.quantity"/></td>
+            </tr>
+            <tr>
+              <td>Price</td>
+              <td><input id="quantity" type="text" placeholder="Price" ng-model="newItem.price"/></td>
+            </tr> 
+            <tr>
+              <td>
+                <button class="btn btn-default" ng-click="addItem(newItem)">
+                  <span class="glyphicon glyphicon-plus" ></span>Add
+                </button>
+              </td>
+              <td>
+                <button class="btn btn-default" ng-click="reset()">
+                  <span class="glyphicon glyphicon-asterisk" ></span>Reset
+                </button>
+              </td>
+            </tr>
+          </table>
         </form>
-      
       </div>
 
 

@@ -9,10 +9,18 @@ angular.module('InventoryCtrl', ['InventoryService'])
   $scope.showEditItem = false;
   $scope.showResult = false;
 
-
+  $scope.increment = function(product) {
+      console.log("Inc");
+      product.onHandQu++;
+      //$scope.value++;
+  }
+  $scope.decrement = function(product) {
+      console.log("Dec");
+      product.onHandQu--;
+  }
 
   mySocket.emit('my other event', { my: 'data' });
-  mySocket.on('news', function (data) {
+  mySocket.on('take', function (data) {
     console.log(data);
     mySocket.emit('my other event', { my: 'data' });
   });
@@ -32,7 +40,7 @@ angular.module('InventoryCtrl', ['InventoryService'])
     InventoryService.getProducts($scope.query)
     .then(
       function(r) {
-        //console.log(r.data);
+        console.log(r.data);
         $scope.showResult = true;
         $scope.inventory = angular.copy(r.data);
         //alert('data loaded');
@@ -51,10 +59,16 @@ angular.module('InventoryCtrl', ['InventoryService'])
   $scope.showEditForm = function(item) {
     $scope.showEditItem = true;
     console.log(item);
-    $scope.editItem.upc = item;
+    $scope.editItem.upc = item.upc;
+    $scope.editItem.name = item.name;
+    $scope.editItem.quantity = item.onHandQu;
+    $scope.editItem.price = item.price;
+   // $scope.editItem.price = item.price;
+
   };
 
   $scope.addItem = function(newItem) {
+    mySocket.emit('new:item', { my: 'item added' });
     InventoryService.addItem(newItem)
     .then(
       function(r) {

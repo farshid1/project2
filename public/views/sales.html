@@ -49,7 +49,7 @@
       </div>
 
 
-<!-- Inventory table -->
+<!-- Products table -->
       <div class="row">
         <table class="table table-striped" ng-show="showResult">
           <thead>
@@ -62,7 +62,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="product in inventory | limitTo:numLimit" >
+            <tr ng-repeat="product in products | limitTo:numLimit" >
               <td>{{product.upc}}</td>
               <td>{{product.name}}</td>
               <td>
@@ -89,7 +89,7 @@
     </div>
   </div>
 
-<!-- Add to Order -->
+<!-- Add to Order Button -->
   <button  ng-click="showAddCustomerForm()" class="btn btn-default"> Add Customer</button>
   
  <div class="row">
@@ -221,7 +221,7 @@
   </div>
 
 
-  <div class="row" ng-if="showInvoice">
+  <div class="row" ng-if="showOrder">
     <div class="col-md-2"></div>
     <div class="col-md-8">
       
@@ -236,7 +236,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="item in items">
+          <tr ng-repeat="item in orders">
             <td>
               <!-- editable username (text with validation) -->
               <span editable-text="item.upc" e-name="upc" e-form="rowform" onbeforesave="checkUpc($data, user.id)" e-required>

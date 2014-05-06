@@ -10,9 +10,7 @@ var _ = require('underscore');
 //input : customerNameFE
 
 function doesCustomerExist(req, res) {
-
-    console.log(req.body); 
-    var Cust_email = req.body.name,
+    var Cust_email = req.body.customerNameody,
         sales_PersId = req.session.uid;
     console.log(Cust_email);
    
@@ -59,7 +57,6 @@ function doesCustomerExist(req, res) {
 
 exports.addNewCustomer = function (req, res) {
 
-    console.log(req.body);
     var sales_PersId = req.session.uid,
         //cust_Id = req.body.customerIdFE,
         cust_fName = req.body.first,
@@ -75,7 +72,6 @@ exports.addNewCustomer = function (req, res) {
         email: cust_email,
         address: cust_address
     };
-console.log("HERREERERERER");
 
     var temp = new Customer(docs);
     temp.save(function (err, admin) {
@@ -105,29 +101,29 @@ exports.editCustomer = function (req, res) {
 
       
         console.log(typeof (cust_Id) );
-    if (sales_PersId === undefined) {
-        return res.redirect("/login");
-    }
-
-    Customer.update({
-        _id: cust_Id},{
-        firstName: cust_fName,
-        lastName: cust_lName,
-        phoneNumber: cust_phNum,
-        email: cust_email,
-        address: cust_address
-    }, function (error, doc) {
-        if (error) {
-           
-            throw error;
-        } else {
-
-            res.jsonp({
-                message: "Customer information was succesfuly edited "
-            });
+        if (sales_PersId === undefined) {
+            return res.redirect("/login");
         }
 
-    });
+        Customer.update({
+            _id: cust_Id},{
+            firstName: cust_fName,
+            lastName: cust_lName,
+            phoneNumber: cust_phNum,
+            email: cust_email,
+            address: cust_address
+        }, function (error, doc) {
+            if (error) {
+               
+                throw error;
+            } else {
+
+                res.jsonp({
+                    message: "Customer information was succesfuly edited "
+                });
+            }
+
+        });
 };
 
 
@@ -165,7 +161,6 @@ exports.addToCart = function (req, res) {
         sale_date = new Date();
 
 
-
     if (sales_PersId === undefined) {
         return res.redirect("/login");
     }
@@ -173,7 +168,7 @@ exports.addToCart = function (req, res) {
 
     Sales.findOne({
             salesPersonId: sales_PersId,
-            _id: cust_Id,
+            customerId: cust_Id,
             state: 0
         },
         function (err, doc) {
@@ -186,11 +181,11 @@ exports.addToCart = function (req, res) {
 
                 Sales.update({
                     salesPersonId: sales_PersId,
-                    _id: cust_Id,
+                    customerId: cust_Id,
                     state: 0
                 }, {
                     salesPersonId: sales_PersId,
-                    _id: cust_Id,
+                    customerId: cust_Id,
                     comments: product_comments,
                     totalPrice: total_Price,
                     date: sale_date,
@@ -245,12 +240,11 @@ exports.addToCart = function (req, res) {
 
                 var docs = {
                     salesPersonId: sales_PersId,
-                    _id: cust_Id,
+                    customerId: cust_Id,
                     comments: product_comments,
                     totalPrice: total_Price,
                     date: sale_date,
                     state: 0,
-
                     products: [{
                         'upc': product_upc,
                         'name': product_name,
@@ -321,7 +315,7 @@ exports.FinalizeInvoice = function (req, res) {
 
     Sales.findOne({
             salesPersonId: sales_PersId,
-            _id: cust_Id,
+            customerId: cust_Id,
             state: 0
         },
         function (err, doc) {
@@ -339,7 +333,7 @@ exports.FinalizeInvoice = function (req, res) {
                 //------------------------------------
                 Sales.update({
                         salesPersonId: sales_PersId,
-                        _id: cust_Id,
+                        customerId: cust_Id,
                         state: 0
                     }, {
                         state: 1
@@ -413,6 +407,154 @@ exports.showAllPendingCart = function (req, res) {
             }
         });
 };
+
+
+exports.editOrder = function (req, res) {
+    console.log("in edit");
+    var sales_PersId = req.session.uid,      
+        cust_Id = req.body.customerId,
+        product_comments = req.body.comment,
+        total_Price = req.body.totalPrice,
+        product_upc = req.body.upc,
+        product_name = req.body.productName,
+        product_quantity = req.body.quantity,
+        product_price = req.body.price,
+        customer_Name = req.body.customerName,
+        sale_date = new Date();
+
+
+Sales.findOne({
+            salesPersonId: sales_PersId,
+            customerId: cust_Id,
+            state: 0
+        },
+        function (err, doc) {
+            if (err) {
+                console.log("in Errorr findone");
+                throw err;
+            }
+
+            if (doc) {
+                console.log("in foundone");
+
+                Sales.update({
+                    salesPersonId: sales_PersId,
+                    customerId: cust_Id,
+                    state: 0, "products.upc": product_upc
+                }, {
+                    $inc: {
+                        "products.$.quantity": product_quantity
+                    }}
+                , function (error, doc) {
+
+                    if (error) {
+                        console.log("in update Error");
+                        throw error;
+                    } else {
+                        console.log("oooooooooook");
+
+                        Inventory.update({
+                            upc: product_upc
+                        }, {
+                            $inc: {
+                                onHoldQu: product_quantity
+                            }
+                        }, function (error, doc) {
+
+                            if (error) {
+                                throw error;
+                            } else {
+                                console.log("updated to inventory");
+                                res.jsonp({
+                                    message: "This item has beeen modified to the cart "
+                                });
+                            }
+
+
+                        });
+                    }
+
+
+                });
+
+
+
+            } else {
+
+                res.jsonp ({ message : 'This item can not be find in the cart'});
+
+
+            }
+
+        })
+
+};  
+
+// if closeOrder flag is '1' close the cart (last item deleted) otherwise 
+// just remove the item form the cart
+exports.deleteItem = function (req, res) {
+   
+    var sales_PersId = req.session.uid,      
+        cust_Id = req.body.customerId,
+        product_comments = req.body.comment,
+        total_Price = req.body.totalPrice,
+        product_upc = req.body.upc,
+        product_name = req.body.productName,
+        product_quantity = req.body.quantity,
+        product_price = req.body.price,
+        customer_Name = req.body.customerName,
+        last_itemOnCart = req.body.closeOrder, 
+        sale_date = new Date();
+
+
+         console.log("sssssss"+last_itemOnCart);
+    if (sales_PersId === undefined)
+        return res.redirect("/login");
+        
+    if(last_itemOnCart==='1'){
+        console.log("sssssss"+last_itemOnCart);
+
+   
+
+           Sales.update({
+             salesPersonId: sales_PersId,
+            customerId: cust_Id,
+            state: 0 },{ state:1 },function (err, doc) {
+            if (err) {
+
+                throw err;
+            }
+            else{
+                res.jsonp({message : "The last item in the cart was removed and cart was closed"});
+            } 
+
+           
+    });
+
+
+
+    }
+    else {
+        console.log("elseeeeeee");
+            Sales.update(
+                    { salesPersonId: sales_PersId,
+            customerId: cust_Id,
+            state: 0},{$pull:{ products:{'upc': product_upc}} },
+
+        function (err, doc) {
+            if (err) {
+
+                throw err;
+            }
+            else {
+                res.jsonp({message : "The item was removed from the cart"})
+        }  
+          });
+    }
+
+};
+
+
 
 // exports.seachProduct = function (req, res) {
 //     var uid = req.session.uid;

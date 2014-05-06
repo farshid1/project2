@@ -3,7 +3,7 @@ var mongoose = require('mongoose'),
 var salesSchema = new Schema({
     salesPersonId: Number,
     comments: String,
-    customerId: Number,
+    customerId: String,
     customerName: String,
     totalPrice: Number,
     date: Date,
