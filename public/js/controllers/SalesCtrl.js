@@ -3,7 +3,7 @@ angular.module('SalesCtrl', ['SalesService'])
   
   $scope.inventory = [];
   $scope.items = [];
-  $scope.newCustomer = {};
+  $scope.newCustomerMaster = {};
   $scope.editCustomer = {};
   $scope.customerId = '';
   $scope.customers = [];
@@ -20,68 +20,91 @@ angular.module('SalesCtrl', ['SalesService'])
   //$scope.checkUpc = function()
   $scope.searchCustomers = function(customer) {
       console.log(customer);
-        SalesService.getCustomers(customer)
-        .then(
-          function(response) {
-            if (response.data.message) {
-              console.log(response.data.message);
-            }
-            else {
-              //$scope.customers = angular.copy(response.data.message);
-              $scope.searchCustomers = limitToFilter(response.data, 10);
-            }
-            
-          },
-          function(response) {
-            console.log(response.data);
-          }
-        );
-  };
-
-  $scope.addCustomerToInvoice = function(customerID) {
-    SalesService.getCustomer(customerID)
-    .then (
+    return SalesService.getCustomers(customer)
+    .then(
       function(response) {
-        $scope.customer = angular.copy(response.data[0]);
+        if (response.data.message) {
+          console.log(response.data.message);
+        }
+        else {
+          console.log(response.data);
+          for (var i = 0; i < response.data.length; i++ ) {
+            $scope.customers.push(response.data[i]);
+          }
+          return $scope.customers;
+        }
+        
       },
       function(response) {
-
+        console.log(response.data);
       }
     );
   };
 
-  $scope.addCustomer= function(formData) {
-    SalesService.addCustomer(formData)
+  $scope.addCustomerToOrder = function($item) {
+
+    $scope.customer = angular.copy($item);
+    console.log($scope.customer);
+    // SalesService.getCustomer(customerID)
+    // .then (
+    //   function(response) {
+    //     $scope.customer = angular.copy(response.data[0]);
+    //   },
+    //   function(response) {
+
+    //   }
+    // );
+  };
+
+  $scope.addCustomer= function() {
+    $scope.newCustomerMaster = angular.copy($scope.newCustomer);
+    console.log($scope.newCustomerMaster);
+    SalesService.addCustomer($scope.newCustomerMaster)
     .then (
       function(response) {
         if(response.data.message) {
           console.log(response.data.message);
         }
         else {
-          console.log("faile")
+          $scope.newCustomerMaster = {}
+          $scope.reset();
+          console.log("new customer added")
+
         }
         
       },
       function(response) {
-
+        console.log("failed");
       }
     );
   };
 
+  $scope.reset = function() {
+    $scope.newCustomer = angular.copy($scope.newCustomerMaster);
+  };
   $scope.searchItem = function() {
-    SalesService.getProducts($scope.query)
-    .then(
-      function(response) {
-        //console.log(typeof(response.data));
-
-        $scope.showResult = true;
-        $scope.inventory = angular.copy(response.data);
-        //alert('data loaded');
-      },
-      function () {
-        alert('failed');
-      }
-    );
+    console.log($scope.query.length);
+    if($scope.query.length > 1) {
+      SalesService.getProducts($scope.query)
+      .then(
+        function(response) {
+          //console.log(typeof(response.data));
+          console.log(response.data.length,"response length");
+          if(response.data.length !== 0) {
+            $scope.showResult = true;
+            $scope.inventory = angular.copy(response.data);
+          }
+          
+          //alert('data loaded');
+        },
+        function () {
+          alert('failed');
+        }
+      );
+    }
+    else {
+      $scope.showResult = false;
+    }
   };
 
 
@@ -95,25 +118,34 @@ angular.module('SalesCtrl', ['SalesService'])
     $scope.editCustomer.upc = item;
   };
 
-  $scope.addProductToInvoice = function(product) {
+  $scope.addProductToInvoice = function($item) {
     
+    var newItem = {
+      customerId: $scope.customer._id,
+      comment: "",
+      totalPrice: $item.price,
+      upc: $item.price,
+      productName: $item.name,
+      quantity: $item.quantity
+    };
+    console.log($item);
     $scope.showInvoice = true;
     $scope.disableAddButton = true;
-    $scope.items.push(product);
+    $scope.items.push($item);
     console.log($scope.items);
 
-    // SalesService.addToCart(product)
-    // .then(
-    //   function(response) {
-    //     //console.log(response.data);
-    //     $scope.showInvoice = true;
-    //     $scope.inventory = angular.copy(response.data);
-    //     //alert('data loaded');
-    //   },
-    //   function () {
-    //     alert('failed');
-    //   }
-    // );
+    SalesService.addToOrder($item)
+    .then(
+      function(response) {
+        //console.log(response.data);
+        $scope.showInvoice = true;
+        $scope.inventory = angular.copy(response.data);
+        //alert('data loaded');
+      },
+      function () {
+        alert('failed');
+      }
+    );
   };
   $scope.disableButton = function() {
     return false;

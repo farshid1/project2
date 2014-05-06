@@ -1,3 +1,4 @@
+
 //user controller
 
 var mongoose = require('mongoose'),
@@ -26,7 +27,8 @@ function doesUserExist(req, res, callback){
 
 //Create the user
 function createUser(req){
- var user = req.body.username,
+
+    var user = req.body.username,
    pass = req.body.password,
    first = req.body.firstName,
    last = req.body.lastName,
@@ -51,7 +53,7 @@ else {
 
 //- Attempt to log user in and create session cookie
 exports.login = function(req, res) {
-  var user = req.body.username,
+    var user = req.body.username,
     pass = req.body.password;
     console.log(user);
 
@@ -69,7 +71,7 @@ exports.login = function(req, res) {
         console.log("USER: '" + user + "' successfully authenticated");
         console.dir(doc);
         console.log ("uid is : "+doc._id);
-        req.session.uid = doc._id;
+        req.session.uid = parseInt( "0x"+doc._id);
         req.session.urole = doc.role;
         console.log(req.session.urole);
         console.log("USER: '" + user + "'" + " valid credentials");
@@ -111,7 +113,7 @@ exports.update = function(req,res){
         });
     } else {
       console.log("No user found");
-      res.redirect('/edit');
+      res.jsonp({message : "No user found"});
     }
   });
 };
@@ -136,5 +138,3 @@ exports.isAuthenticated = function(req, res, next){
     next();
   }
 }
-
-

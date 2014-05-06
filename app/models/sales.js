@@ -4,6 +4,7 @@ var salesSchema = new Schema({
     salesPersonId: Number,
     comments: String,
     customerId: Number,
+    customerName: String,
     totalPrice: Number,
     date: Date,
     state: Number,

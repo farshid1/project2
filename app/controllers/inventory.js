@@ -21,18 +21,20 @@ upc: Number,
 //if item exist increase the quantity by quantity else add the new item. 
 //inputs: upcFE, quantityFE,[nameFE], [pictureFE], [priceFE] ,[onHoldQuFE:0], [soldFE:0]
 exports.addQuantity = function(req,res){
-  var uid = 888;
+  var uid = req.session.uid;
+  console.log(uid);
 
   if (uid === undefined)
       return res.redirect("/login");
-    
-    var upcU = req.body.upcFE;
-    console.log(upcU);
-    console.log(req.body.upcFE)
-  var quantityU = req.body.quantityFE;
+
+  var upcU = req.body.upc;
+  var quantityU = req.body.quantity;
   var dateU = new Date();
   var onHoldQuU = 0;
   var soldQuU = 0;
+
+
+
   
   if(req.body.onHoldQuFE)
     onHoldQuU = req.body.onHoldQuFE;
@@ -82,19 +84,21 @@ exports.addQuantity = function(req,res){
 //update all the new values for an item
 //inputs: upcFE, quantityFE,nameFE, pictureFE, priceFE, onHoldQuFE, soldQu
 exports.editItem = function(req,res){
-  var uid = 888;
+var uid = req.session.uid;
 
     if (uid === undefined)
       return res.redirect("/login");
 
-  var upcU = req.body.upcFE;
-  var quantityU = req.body.quantityFE;
-  var nameU = req.body.nameFE;
-  var pictureU = req.body.pictureFE; 
-  var priceU = req.body.priceFE;
+  var upcU = req.body.upc;
+  var quantityU = req.body.quantity;
+  var nameU = req.body.name;
+  var pictureU = req.body.picture; 
+  var priceU = req.body.price;
   var dateU = new Date();
-  var onHoldQuU = req.body.onHoldQuFE;
-  var soldQuU = req.body.soldQuFE;
+  var onHoldQuU = req.body.onHoldQu;
+  var soldQuU = req.body.soldQu;
+
+
 
   var document = {upc: upcU,name: nameU,picture: pictureU,
     onHandQu: quantityU,onHoldQu: onHoldQuU, soldQu:soldQuU,price: priceU,
@@ -110,11 +114,10 @@ exports.editItem = function(req,res){
 //chec if item exist if yes rerout to /inventory/addItemError else adds the item
 //inputs: upcFE, quantityFE,nameFE, pictureFE, priceFE ,[onHoldQuFE:0], [soldQu:0]
 exports.addItem = function(req,res){
-  var uid = 888;
-
+  uid = req.session.uid;
+  console.log(uid);
     if (uid === undefined)
       return res.redirect("/login");
-
   var upcU = req.body.upc;
   var quantityU = req.body.quantity;
   var nameU = req.body.name;
@@ -159,9 +162,10 @@ exports.searchItem = function(req,res){
     if (uid === undefined)
       return res.redirect("/login");
 
-    var upcU = req.body.upcFE;
+
+    var upcU = req.body.upc;
   
-  var nameU = req.body.creteriaFE;
+  var nameU = req.body.creteria;
 
   if(upcU){
 

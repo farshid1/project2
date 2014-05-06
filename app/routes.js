@@ -25,10 +25,13 @@ module.exports = function(app) {
 	app.post('/api/sales/searchCustomer', user.isAuthenticated,sales.searchCustomer);
 	app.post('/api/sales/addNewCustomer', user.isAuthenticated,sales.addNewCustomer);
 	app.post('/api/sales/editCustomer', user.isAuthenticated,sales.editCustomer);
+	app.post('/api/sales/showAllPendingCart', user.isAuthenticated,sales.showAllPendingCart);
+
+
+
 
 
 	
-	//app.post('/api/sales/searchProduct',user.isAuthenticated, sales.seachProduct);
 	app.post('/api/sales/FinalizeInvoice',user.isAuthenticated ,sales.FinalizeInvoice);
 	
 	// frontend routes =========================================================

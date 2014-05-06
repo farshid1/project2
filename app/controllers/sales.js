@@ -10,6 +10,8 @@ var _ = require('underscore');
 //input : customerNameFE
 
 function doesCustomerExist(req, res) {
+
+    console.log(req.body); 
     var Cust_email = req.body.name,
         sales_PersId = req.session.uid;
     console.log(Cust_email);
@@ -57,30 +59,29 @@ function doesCustomerExist(req, res) {
 
 exports.addNewCustomer = function (req, res) {
 
+    console.log(req.body);
     var sales_PersId = req.session.uid,
-        cust_Id = 2,
+        //cust_Id = req.body.customerIdFE,
         cust_fName = req.body.first,
         cust_lName = req.body.last,
         cust_phNum = req.body.phone,
         cust_email = req.body.email,
         cust_address = req.body.address;
+
     var docs = {
-        customerId: cust_Id,
         firstName: cust_fName,
         lastName: cust_lName,
         phoneNumber: cust_phNum,
         email: cust_email,
         address: cust_address
     };
-
+console.log("HERREERERERER");
 
     var temp = new Customer(docs);
     temp.save(function (err, admin) {
-        if (err) return console.error(err);
+        if (err)  res.jsonp({"message": err});
         else {
-            res.jsonp({
-                message: " The Customer information was succesfuly saved."
-            });
+            res.jsonp(admin);
         }
     });
 
@@ -94,21 +95,22 @@ exports.addNewCustomer = function (req, res) {
 
 exports.editCustomer = function (req, res) {
 
-    var sales_PersId = req.body.sales_PersId,
-        // var sales_PersId = req.session.uid,
-        cust_Id = req.body.customerIdFE,
-        cust_fName = req.body.customerFirstNameFE,
-        cust_lName = req.body.customerLastNameFE,
-        cust_phNum = req.body.customerPhoneNumberFE,
-        cust_email = req.body.customerEmailFE,
-        cust_address = req.body.customerAddressFE;
+        var sales_PersId = req.session.uid,
+        cust_Id = req.body.customerId,
+        cust_fName = req.body.customerFirstName,
+        cust_lName = req.body.customerLastName,
+        cust_phNum = req.body.customerPhoneNumber,
+        cust_email = req.body.customerEmail,
+        cust_address = req.body.customerAddress;
 
+      
+        console.log(typeof (cust_Id) );
     if (sales_PersId === undefined) {
         return res.redirect("/login");
     }
 
     Customer.update({
-        customerId: cust_Id},{
+        _id: cust_Id},{
         firstName: cust_fName,
         lastName: cust_lName,
         phoneNumber: cust_phNum,
@@ -152,15 +154,17 @@ exports.searchCustomer = function (req, res) {
 exports.addToCart = function (req, res) {
 
      
-    var sales_PersId = req.session.uid,
-        cust_Id = req.body.customerIdFE,
-        product_comments = req.body.commentFE,
-        total_Price = req.body.totalPriceFE,
-        product_upc = req.body.upcFE,
-        product_name = req.body.productNameFE,
-        product_quantity = req.body.quantityFE,
-        product_price = req.body.priceFE,
+    var sales_PersId = req.session.uid,      
+        cust_Id = req.body.customerId,
+        product_comments = req.body.comment,
+        total_Price = req.body.totalPrice,
+        product_upc = req.body.upc,
+        product_name = req.body.productName,
+        product_quantity = req.body.quantity,
+        product_price = req.body.price,
         sale_date = new Date();
+
+
 
     if (sales_PersId === undefined) {
         return res.redirect("/login");
@@ -169,7 +173,7 @@ exports.addToCart = function (req, res) {
 
     Sales.findOne({
             salesPersonId: sales_PersId,
-            customerId: cust_Id,
+            _id: cust_Id,
             state: 0
         },
         function (err, doc) {
@@ -182,11 +186,11 @@ exports.addToCart = function (req, res) {
 
                 Sales.update({
                     salesPersonId: sales_PersId,
-                    customerId: cust_Id,
+                    _id: cust_Id,
                     state: 0
                 }, {
                     salesPersonId: sales_PersId,
-                    customerId: cust_Id,
+                    _id: cust_Id,
                     comments: product_comments,
                     totalPrice: total_Price,
                     date: sale_date,
@@ -241,7 +245,7 @@ exports.addToCart = function (req, res) {
 
                 var docs = {
                     salesPersonId: sales_PersId,
-                    customerId: cust_Id,
+                    _id: cust_Id,
                     comments: product_comments,
                     totalPrice: total_Price,
                     date: sale_date,
@@ -262,7 +266,7 @@ exports.addToCart = function (req, res) {
                     if (err) {
                         return console.error(err);
                     } else {
-                        console.log('message : The new order has beeen added into the cart');
+                        console.log('message : "The new order has beeen added into the cart');
                     }
 
 
@@ -299,22 +303,25 @@ exports.addToCart = function (req, res) {
 // -- input :   sales_PersId,customerIdFE,commentFE, customerLastNameFE,upcFE, nameFE,quantityFE,priceFE
 exports.FinalizeInvoice = function (req, res) {
     var uid = req.session.uid;
-    var sales_PersId = req.body.sales_PersId,
-        cust_Id = req.body.customerIdFE,
-        product_comments = req.body.commentFE,
-        total_Price = req.body.customerLastNameFE,
-        product_upc = req.body.upcFE,
-        product_name = req.body.nameFE,
-        product_quantity = req.body.quantityFE,
-        product_price = req.body.priceFE,
+
+        var sales_PersId = req.body.sales_PersId,
+        cust_Id = req.body.customerId,
+        product_comments = req.body.comment,
+        total_Price = req.body.customerLastName,
+        product_upc = req.body.upc,
+        product_name = req.body.name,
+        product_quantity = req.body.quantity,
+        product_price = req.body.price,
         sale_date = new Date();
+        
+
 
     if (uid === undefined)
     return res.redirect("/login");
 
     Sales.findOne({
             salesPersonId: sales_PersId,
-            customerId: cust_Id,
+            _id: cust_Id,
             state: 0
         },
         function (err, doc) {
@@ -332,7 +339,7 @@ exports.FinalizeInvoice = function (req, res) {
                 //------------------------------------
                 Sales.update({
                         salesPersonId: sales_PersId,
-                        customerId: cust_Id,
+                        _id: cust_Id,
                         state: 0
                     }, {
                         state: 1
@@ -382,7 +389,30 @@ exports.FinalizeInvoice = function (req, res) {
         })
 };
 
+exports.showAllPendingCart = function (req, res) {
+    var sales_PersId = req.session.uid;
+    //cust_Id = req.body.customerId;
+    if (sales_PersId === undefined)
+        return res.redirect("/login");
 
+    Sales.find({
+            salesPersonId: sales_PersId,
+            state: 0
+        },
+        function (err, doc) {
+            if (err) {
+
+                res.jsonp({message : "500 ,ServerError"});
+            }
+
+            if (doc) {
+                res.jsonp(doc);
+            } 
+            else {
+                res.jsonp({message : " No open Cart found"});
+            }
+        });
+};
 
 // exports.seachProduct = function (req, res) {
 //     var uid = req.session.uid;

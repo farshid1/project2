@@ -9,9 +9,9 @@
         <div class="left-inner-addon">
           <i class="glyphicon glyphicon-search"></i>
           <input ng-model="customerQuery" type="text" 
-                 typeahead="suggestion for suggestion in searchCustomers($viewValue)"
+                 typeahead="suggestion.firstName+' '+suggestion.lastName for suggestion in searchCustomers($viewValue)"
                  typeahead-editable="false"
-                 typeahead-on-select="addCustomerToInvoice($item)"
+                 typeahead-on-select="addCustomerToOrder($item)"
                  typeahead-min-length="3"  
                  class="form-control" 
           />
@@ -22,10 +22,11 @@
       </div>
 
     </div>
-    <div class="col-md-2"></div>
+    
   </div>
 
   <div class="row">
+    <div class="col-md-2"></div>
     <div class="well col-md-8">
       <!--Search Items -->
       <!-- Single button -->
@@ -49,39 +50,40 @@
 
 
 <!-- Inventory table -->
-
-      <table class="table table-striped" ng-show="showResult">
-        <thead>
-          <tr>
-            <th>UPC</th>
-            <th>Name</th>
-            <th>Quantity</th>
-            <th>Price</th>
-            <th>Add</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr ng-repeat="product in inventory | limitTo:numLimit" >
-            <td>{{product.upc}}</td>
-            <td>{{product.name}}</td>
-            <td>
-              {{product.onHandQu}}
-              <span class="glyphicon glyphicon-plus-sign"></span>
-              <span class="glyphicon glyphicon-minus-sign"></span>
-            </td>
-            <td>{{product.price}}</td>
-            <td>
-              <button class="btn btn-default" 
-                      ng-click="addProductToInvoice(product)" 
-                      ng-disable="disableButton()"> 
-                <span class="glyphicon glyphicon-plus-sign" ></span>
-                Add
-              </button>
-            </td>
-            
-          </tr>
-        </tbody>
-      </table>
+      <div class="row">
+        <table class="table table-striped" ng-show="showResult">
+          <thead>
+            <tr>
+              <th>UPC</th>
+              <th>Name</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th>Add</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="product in inventory | limitTo:numLimit" >
+              <td>{{product.upc}}</td>
+              <td>{{product.name}}</td>
+              <td>
+                {{product.onHandQu}}
+                <!-- <span class="glyphicon glyphicon-plus-sign"></span>
+                <span class="glyphicon glyphicon-minus-sign"></span> -->
+              </td>
+              <td>{{product.price}}</td>
+              <td>
+                <button class="btn btn-default" 
+                        ng-click="addProductToOrder(product)" 
+                        ng-disable="disableButton()"> 
+                  <span class="glyphicon glyphicon-plus-sign" ></span>
+                  Add
+                </button>
+              </td>
+              
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
 
     </div>
@@ -148,7 +150,7 @@
         <!-- Button -->
         <div class="form-group">
           <div class="col-md-4">
-            <button  ng-click="addCustomer(newCustomer)" class="btn btn-primary">Submit</button>
+            <button  ng-click="addCustomer()" class="btn btn-primary">Submit</button>
           </div>
         </div>
 
@@ -220,7 +222,7 @@
 
 
   <div class="row" ng-if="showInvoice">
-    
+    <div class="col-md-2"></div>
     <div class="col-md-8">
       
       <table class="table table-bordered table-hover table-condensed">
@@ -249,8 +251,8 @@
             </td>
             <td>
               <!-- editable username (text with validation) -->
-              <span editable-text="item.quantity" e-name="quantity" e-form="rowform" onbeforesave="checkQuantity($data, user.id)" e-required>
-                {{ item.quantity || 'empty' }}
+              <span editable-text="item.onHandQu" e-name="onHandQu" e-form="rowform" onbeforesave="checkQuantity($data, user.id)" e-required>
+                {{ item.onHandQu || 'empty' }}
               </span>
             </td>
             <td>
@@ -340,8 +342,7 @@
         </tbody>
       </table>
     </div>
-    <div class="col-md-4">
-      
-    </div>
+    <div class="col-md-2"></div>
+    
   </div>
 </div>

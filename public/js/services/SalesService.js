@@ -38,6 +38,14 @@ angular.module('SalesService', [])
 			 	method: 'GET',
 			 	header: {'Content-Type':'application/json'}
 			});
+		},
+		addToOrder: function(item) {
+			return $http({
+				url: '/api/sales/addToCart',
+				data: item,
+			 	method: 'POST',
+			 	header: {'Content-Type':'application/json'}
+			});
 		}
 	}
 
