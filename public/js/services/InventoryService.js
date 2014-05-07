@@ -8,8 +8,7 @@ angular.module('InventoryService', []).factory('InventoryService',['$http','$q',
 		getProducts: function(formData) {
 			return $http({
 				url: '/api/inventory/searchItem',
-				data: {creteriaFE: formData},
-				//data: JSON.stringify(formData),
+				data: {creteria: formData},
 				method: 'POST',
 				header: {'Content-Type':'application/json'}
 			});

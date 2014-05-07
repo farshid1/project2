@@ -155,6 +155,7 @@ exports.editItem = function (req, res) {
         safe: true
     }, function (err, doc) {
         if (err) {
+            console.log(err);
             return res.jsonp({
                 message: "ERROR: on updating the customer "
             });

@@ -11,15 +11,17 @@ angular.module('AdminCtrl', ['AdminService','UserService'])
       );
   });
   
+
   $scope.logOut = function() {
     UserService.logOut()
     .then
     (
       function(response) {
+        console.logOut(response.data);
         $location.path('/login');
       },
       function(response) {
-        console.log("something wron happened", response.data);
+        console.log("something wrong happened", response.data);
       }
     )
   };

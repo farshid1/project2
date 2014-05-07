@@ -1,4 +1,7 @@
 <div class="container-fluid" ng-init="init()">
+<div class="row" style="text-align:right">
+  <a href="#" ng-click="logOut()" class="btn btn-default btn-danger btn-lg"><span class="glyphicon glyphicon-log-out"></span> Log Out</a>
+</div>
   <div class="row">
     <div class="col-md-2">
       <!--Sidebar content-->
@@ -14,7 +17,7 @@
       <!--Body content-->
       <div class="left-inner-addon">
         <i class="glyphicon glyphicon-search"></i>
-        <input ng-model="query" type="text" ng-change="searchItem()" class="form-control" />
+        <input ng-model="query" type="text" ng-change="searchItem(query)" class="form-control" />
       </div>
       <!-- Show Search Result-->
       <table class="table table-striped" ng-show="showResult">
@@ -29,23 +32,61 @@
         </thead>
         <tbody>
           <tr ng-repeat="product in inventory | limitTo:numLimit" >
-              <td>{{product.name}}</td>
-              <td>{{product.name}}</td>
               <td>
-                {{product.quantity}}
-                <span 
-                  class="glyphicon glyphicon-plus-sign" 
-                  ng-click="increment(product)">
+                <span editable-text="product.upc" 
+                      e-name="upc" 
+                      e-form="rowform"
+                      e-required>
+                {{product.upc}}
                 </span>
-                <span class="glyphicon glyphicon-minus-sign" ng-click="decrement(product)"></span>
               </td>
-              <td>{{product.price}}</td>
               <td>
+                <span editable-text="product.name" 
+                      e-name="name" 
+                      e-form="rowform"
+                      e-required>
+                {{product.name}}
+                </span>
+              </td>
+              <td>
+                <span editable-number="product.quantity" 
+                      e-name="quantity" 
+                      e-form="rowform"
+                      e-required
+                      onbeforesave="checkQuantity($data, product.quantity)">
+                {{product.quantity}}
+                </span>
+              </td>
+              <td>
+                <span editable-number="product.price" 
+                      e-name="price" 
+                      e-form="rowform"
+                      e-required
+                      onbeforesave="checkPrice($data, product.quantity)">
+                {{product.price}}
+                </span>
+              </td>
+
+              <td style="white-space: nowrap">
+                <!-- form -->
+                <form editable-form name="rowform" onbeforesave="editItem(product)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == user">
+                  <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
+                    save
+                  </button>
+                  <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default">
+                    cancel
+                  </button>
+                </form>
+                <div class="buttons" ng-show="!rowform.$visible">
+                  <button class="btn btn-primary" ng-click="rowform.$show()">edit</button>
+                </div>  
+              </td>
+              <!-- <td>
                 <button class="btn btn-default" ng-click="showEditForm(product)">
                   <span class="glyphicon glyphicon-edit" ></span>
                   Edit
                 </button>
-              </td>
+              </td> -->
             
           </tr>
         </tbody>
@@ -120,7 +161,9 @@
 
     </div>
   </div>
-  <div class="row" id="notifications">
+  <div class="row" id = "footer">
+    <ul id="notifications">>
+    </ul>
     
   </div> 
 </div>

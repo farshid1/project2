@@ -1,5 +1,5 @@
 angular.module('SalesCtrl', ['SalesService', 'UserService'])
-.controller('SalesController', function ($scope, $http, $rootScope, $location, limitToFilter, SalesService, UserService) {
+.controller('SalesController', function ($scope, $http, $rootScope, $location, limitToFilter, SalesService, UserService, mySocket) {
 
   $scope.products = [];
   $scope.orders = [];
@@ -31,6 +31,15 @@ angular.module('SalesCtrl', ['SalesService', 'UserService'])
     return total;
   }
 
+  //mySocket.emit('my other event', { my: 'data' });
+  mySocket.on('notification', function (data) {
+    console.log("messageId");
+    console.log(data.quantity);
+        console.log("in notification:")
+          console.log(data);
+        $("#notifications").append('<li class="'+data.title+'"> <b>'+data.quantity+'</b> of a new item <b>'+data.name+'</b> was added to the inventory for: $<b>'+data.price+'</b></li>');
+  });
+
   $scope.finalize = function() {
     SalesService.finalizeOrder({customerId: $scope.customer._id})
     .then(
@@ -56,8 +65,20 @@ angular.module('SalesCtrl', ['SalesService', 'UserService'])
     $scope.showSearchCustomer = true;
     $scope.showCustomerDetails = false;
     $scope.showPendingOrders = true;
-    $scope.init();
-  }
+    
+    SalesService.getPendingOrders()
+    .then
+    (
+      function(response) {
+        console.log(response,"pending stuff");
+        $scope.pendingOrders = [];
+        $scope.pendingOrders = angular.copy(response.data);
+      },
+      function(response) {
+        //console.log
+      }
+    );
+  };  
 
   //add this init inventory ctrl
   $scope.init = function() {
@@ -67,6 +88,7 @@ angular.module('SalesCtrl', ['SalesService', 'UserService'])
         console.log(response.data, "from user service post");
           if(response.data.message) {
               console.log(response.data.message);
+              $location.path('/login');
           }
           else {
               // $rootScope.user = angular.copy(response.data);
@@ -279,6 +301,10 @@ angular.module('SalesCtrl', ['SalesService', 'UserService'])
 
   $scope.showAddCustomerForm = function() {
     $scope.showAddCustomer = !$scope.showAddCustomer;
+    $scope.showOrder = false;
+    $scope.showResult = false;
+    $scope.showPendingOrders = false;
+    $scope.showSearchProduct = false;
   };
 
   $scope.showEditCustomerForm = function(item) {
@@ -288,7 +314,7 @@ angular.module('SalesCtrl', ['SalesService', 'UserService'])
   };
 
   $scope.addProductToOrder = function($item) {
-    
+    console.log($scope.grandTotal());
     var newItem = {
       customerId: $scope.customer._id,
       comment: "",
@@ -299,7 +325,7 @@ angular.module('SalesCtrl', ['SalesService', 'UserService'])
       customerName: $scope.customer.firstName + ' ' + $scope.customer.lastName,
       price: $item.price
     };
-    //console.log($item);
+    console.log(newItem,"new item");
     //console.log($scope.customer, "customer");
     
     $scope.showOrder = true;
@@ -310,6 +336,10 @@ angular.module('SalesCtrl', ['SalesService', 'UserService'])
     SalesService.addToOrder(newItem)
     .then(
       function(response) {
+        var send = newItem;
+        send.notifyRole = 3;
+        send.title = "inventory_sold";
+        mySocket.emit('notify', send);
         console.log(response.data, "response from server");
         $scope.showResult = false;
         $scope.showOrder = true;
@@ -326,22 +356,14 @@ angular.module('SalesCtrl', ['SalesService', 'UserService'])
   };
 
 
-
-
-
-
-
-
   $scope.checkQuantity = function(data, qty) {
-    console.log(qty);
-    console.log(data);
+   
     if(data > qty) {
       return "You cannot exceed the max quantity";
     }
-
-    // if (id === 2 && data !== 'awesome') {
-      
-    // }
+    if(data < 0) {
+      return "You cannot have negative values for quantity";
+    }
   };
 
 
@@ -378,7 +400,7 @@ angular.module('SalesCtrl', ['SalesService', 'UserService'])
     var item = {
       customerId: $scope.customer._id,
       comment: '',
-      totalPrice: item.price,
+      totalPrice: $scope.grandTotal(),
       upc: item.upc,
       productName: item.name,
       quantity: item.quantity,
@@ -414,5 +436,20 @@ angular.module('SalesCtrl', ['SalesService', 'UserService'])
     $scope.users.push($scope.inserted);
   };
 
+
+
+  $scope.logOut = function() {
+    UserService.logOut()
+    .then
+    (
+      function(response) {
+        console.log(response.data);
+        $location.path('/login');
+      },
+      function(response) {
+        console.log("something wrong happened", response.data);
+      }
+    )
+};
   
 });

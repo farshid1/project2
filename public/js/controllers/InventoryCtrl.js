@@ -9,6 +9,33 @@ angular.module('InventoryCtrl', ['InventoryService', 'UserService'])
   $scope.showEditItem = false;
   $scope.showResult = false;
 
+
+
+
+
+  $scope.checkQuantity = function(data, qty) {
+   
+    if(data > qty) {
+      return "You cannot exceed the max quantity";
+    }
+    if(data < 0) {
+      return "You cannot have negative values for quantity";
+    }
+  };
+
+  $scope.checkPrice = function(data) {
+   
+    
+    if(data < 0) {
+      return "You cannot have negative values for price";
+    }
+  };
+
+
+
+
+
+
   $scope.init = function() {
     UserService.postData({})
     .then(
@@ -63,7 +90,7 @@ angular.module('InventoryCtrl', ['InventoryService', 'UserService'])
         console.log("in notification:")
         if(data.quantity){
           console.log(data);
-        $("#notifications").append('<li class="'+data.title+'"> <b>'+data.quantity+'</b> of a new item <b>'+data.name+'</b> was added to the inventory for: $<b>'+data.price+'</b></li>');
+         $("#notifications").append('<li class="'+data.title+'"> The quantity of the product:<b>'+data.productName+'</b> with the upc of: <b>'+data.upc+'</b> is under <b>5</b></li>');
       }}
   });
 
@@ -73,25 +100,33 @@ angular.module('InventoryCtrl', ['InventoryService', 'UserService'])
   //     return limitToFilter(response.data, 15);
   //   });
   // };
-  $scope.searchItem = function() {
+  $scope.searchItem = function(query) {
     //console.log($scope.query);
     // if ($scope.query.length < 3) {
     //   console.log('lesss than');
     //   $scope.showResult = false;
     // }
-    InventoryService.getProducts($scope.query)
-    .then(
-      function(r) {
-        console.log(r.data);
-        $scope.showResult = true;
-        $scope.inventory = angular.copy(r.data);
-        //alert('data loaded');
-      },
-      function () {
+    if(query.length > 2) {
+    
+      InventoryService.getProducts(query)
+      .then(
+        function(r) {
 
-        alert('failed');
-      }
-    );
+          console.log(r.data);
+          $scope.showResult = true;
+          $scope.inventory = [];
+          $scope.inventory = angular.copy(r.data);
+          //alert('data loaded');
+        },
+        function () {
+
+          alert('failed');
+        }
+      );
+    }
+    else {
+      $scope.showResult = false;
+    }
   };
 
   $scope.showAddForm = function() {
@@ -112,9 +147,11 @@ angular.module('InventoryCtrl', ['InventoryService', 'UserService'])
   $scope.addItem = function(newItem) {
 
     console.log("in here");
+    newItem.picture = "";
     InventoryService.addItem(newItem)
     .then(
       function(r) {
+        $scope.newItem = [];
         var send = r.data;
         send.notifyRole = 2;
         send.title = "added_inventory";
@@ -132,5 +169,62 @@ angular.module('InventoryCtrl', ['InventoryService', 'UserService'])
       }
     );
   };
+
+
+
+
+
+
+
+
+
+$scope.logOut = function() {
+    UserService.logOut()
+    .then
+    (
+      function(response) {
+        console.log(response.data);
+        $location.path('/login');
+      },
+      function(response) {
+        console.log("something wrong happened", response.data);
+      }
+    )
+};
+
+
+
+$scope.editItem = function(newItem) {
+
+    console.log("in here");
+    newItem.picture = "";
+    InventoryService.editItem(newItem)
+    .then(
+      function(r) {
+        if(r.data.message) {
+          console.log(r.data.message);
+        }
+        else {
+          var send = r.data;
+          send.notifyRole = 2;
+          send.title = "added_inventory";
+          mySocket.emit('notify', send);
+          console.log("********************");
+          console.log(r.data);
+          console.log("********************");
+
+        //$scope.inventory = angular.copy(r.data);
+        alert('item saved');
+        }
+        
+      },
+      function () {
+
+        alert('failed');
+      }
+    );
+  };
+
+
   
 });
