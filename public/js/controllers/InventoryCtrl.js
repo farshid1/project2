@@ -68,11 +68,19 @@ angular.module('InventoryCtrl', ['InventoryService'])
   };
 
   $scope.addItem = function(newItem) {
+
+    console.log("in here");
     InventoryService.addItem(newItem)
     .then(
       function(r) {
-        console.log(r.data);
-        
+        var send = r.data;
+        send.notifyRole = 2;
+        send.title = "added inventory";
+        mySocket.emit('notification', send);
+        // console.log("********************");
+        // console.log(r.data);
+        // console.log("********************");
+
         //$scope.inventory = angular.copy(r.data);
         alert('item saved');
       },

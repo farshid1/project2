@@ -17,27 +17,60 @@ angular.module('SalesCtrl', ['SalesService'])
   $scope.showSearchProduct = false;
   $scope.showSearchCustomer = true;
   $scope.showCustomerDetails = false;
-  $scope.showPendingOrders = false;
+  $scope.showPendingOrders = true;
 
 
+
+  $scope.showAllPendingOrders = function() {
+    $scope.showAddCustomer = false;
+    $scope.showEditCustomer = false;
+    $scope.showResult = false;
+    $scope.showOrder = false;
+    $scope.disableAddButton = false;
+    $scope.showSearchProduct = false;
+    $scope.showSearchCustomer = true;
+    $scope.showCustomerDetails = false;
+    $scope.showPendingOrders = true;
+    $scope.init();
+  }
   $scope.init = function() {
     SalesService.getPendingOrders()
     .then
     (
       function(response) {
-        console.log(response.data);
+        //console.log(response.data);
+        $scope.pendingOrders = [];
         $scope.pendingOrders = angular.copy(response.data);
       },
       function(response) {
         
       }
     );
-  }
+  };
+  $scope.getPendingOrder = function(order) {
+    console.log(order.products);
+    SalesService.getCustomer(order.customerId)
+    .then(
+      function(response) {
+        console.log(response.data);
+        $scope.customer = angular.copy(response.data);
+        $scope.addCustomerToOrder($scope.customer);
+        $scope.showPendingOrders = false;
+        $scope.showOrder = true;
+        $scope.orders = [];
+        $scope.orders = angular.copy(order.products);
+
+      },
+      function(response) {
+        
+      }
+    );
+  };
   $scope.searchCustomer = function(customerId) {
     SalesService.getCustomer(customerId)
     .then(
       function(response) {
-        console.log(response.data);
+        //console.log(response.data);
         $scope.customer = angular.copy(response.data);
       },
       function(response) {
@@ -47,7 +80,7 @@ angular.module('SalesCtrl', ['SalesService'])
   };
 
   $scope.removeCustomer = function() {
-    console.log($scope.customerQuery);
+    //console.log($scope.customerQuery);
     // if ($scope.customerQuery.length === 0) {
     //   $scope.customer = {};
     // }
@@ -65,7 +98,7 @@ angular.module('SalesCtrl', ['SalesService'])
           if($scope.customers.length > 0) {
             $scope.customers = [];
           }
-          console.log($scope.customers);
+          //console.log($scope.customers);
           for (var i = 0; i < response.data.length; i++ ) {
             $scope.customers.push(response.data[i]);
           }
@@ -74,19 +107,22 @@ angular.module('SalesCtrl', ['SalesService'])
         
       },
       function(response) {
-        console.log(response.data);
+        //console.log(response.data);
       }
     );
   };
 
   $scope.addCustomerToOrder = function($item) {
 
+    $scope.orders = [];
+    $scope.showOrder = false;
     $scope.customer = angular.copy($item);
     $scope.showSearchCustomer = false;
     $scope.showSearchProduct = true;
     $scope.showCustomerDetails = true;
+    $scope.showPendingOrders = false;
 
-    console.log($scope.customer);
+    //console.log($scope.customer);
     //console.log($scope.customer);
     // SalesService.getCustomer(customerID)
     // .then (
@@ -134,9 +170,9 @@ angular.module('SalesCtrl', ['SalesService'])
         function(response) {
           var orderArray = angular.copy(angular.fromJson(angular.toJson($scope.orders)));
           var responseArray = angular.copy(angular.fromJson(angular.toJson(response.data)));
-          console.log(orderArray, "this is the order");
-          console.log(responseArray, "this is the response");
-          console.log(_.difference(responseArray, orderArray));
+          // console.log(orderArray, "this is the order");
+          // console.log(responseArray, "this is the response");
+          // console.log(_.difference(responseArray, orderArray));
           // console.log(angular.toJson($scope.orders), " orders to Json");
           // console.log(angular.toJson(response.data), " response to Json");
 
@@ -181,7 +217,8 @@ angular.module('SalesCtrl', ['SalesService'])
       upc: $item.price,
       productName: $item.name,
       quantity: $item.onHandQu,
-      customerName: $scope.customer.firstName + ' ' + $scope.customer.lastName
+      customerName: $scope.customer.firstName + ' ' + $scope.customer.lastName,
+      price: $item.price
     };
     //console.log($item);
     //console.log($scope.customer, "customer");
@@ -257,18 +294,15 @@ angular.module('SalesCtrl', ['SalesService'])
       closeOrder: $scope.orders.length === 1 ? '1' : '0'
     };
 
-    console.log(item);
+    // console.log(item);
     SalesService.deleteOrder(item)
     .then(
       function(response) {
-        if($scope.orders.length > 0) {
-          $scope.orders.splice(index, 1);
+        $scope.orders.splice(index, 1);
+        if($scope.orders.length === 0) {
           $scope.showOrder = false;
         }
-        else {
-          $scope.orders.splice(index, 1);
-        }
-        console.log(response.data);
+        // console.log(response.data);
       },
       function(response) {
         console.log(response.data);

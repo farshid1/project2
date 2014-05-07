@@ -20,6 +20,7 @@ angular.module('UserCtrl', ['UserService', 'mySocket']).controller('UserControll
                     }
                     else {
                         console.log(response.data.role);
+                        mySocket.emit('log in', r.data);
                         $rootScope.user = angular.copy(response.data);
                         $rootScope.isLoggedin = true;
                         switch($rootScope.user.role) {
@@ -62,13 +63,13 @@ angular.module('UserCtrl', ['UserService', 'mySocket']).controller('UserControll
             // };
         };
         
-    	$scope.submit = function(formData) {
-    		$scope.master = angular.copy(formData);
+        $scope.submit = function(formData) {
+            $scope.master = angular.copy(formData);
 
-    		UserService.postData($scope.master)
-    		.then (
-    			function(r) {
-				console.log(r.data.role);
+            UserService.postData($scope.master)
+            .then (
+                function(r) {
+                console.log(r.data.role);
                 $rootScope.user = angular.copy(r.data);
                 $rootScope.isLoggedin = true;
                 switch($rootScope.user.role) {
@@ -90,14 +91,14 @@ angular.module('UserCtrl', ['UserService', 'mySocket']).controller('UserControll
                
                 
                 
-				//$scope.restaurants = angular.copy(r.data);
-				//alert('data loaded');
-			},
-			function () {
-				alert('failed')
-			}
-    		)
-    	}
+                //$scope.restaurants = angular.copy(r.data);
+                //alert('data loaded');
+            },
+            function () {
+                alert('failed')
+            }
+            )
+        }
 
 
 

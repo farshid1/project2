@@ -35,8 +35,9 @@ angular.module('SalesService', [])
 		},
 		getCustomer: function(customerId) {
 			return $http({
-				url: '/api/sales/searchCustomer/'+customerId,
-			 	method: 'GET',
+				url: '/api/sales/getCustmoerInfoById/',
+				data: {customerId: customerId},
+			 	method: 'POST',
 			 	header: {'Content-Type':'application/json'}
 			});
 		},

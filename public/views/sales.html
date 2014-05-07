@@ -59,6 +59,12 @@
         Add Customer
       </button>
     </div>
+    <div class="col-md-2">
+      <button ng-click="showAllPendingOrders()" class="btn btn-default">
+        <span class="glyphicon glyphicon-plus" ></span>
+        Pending Orders
+      </button>
+    </div>
   </div>
 
 
@@ -142,14 +148,14 @@
 <!--Pending Orders content--> 
 
 
-  <div class="row row-centered" >
+  <div class="row row-centered" ng-if="showPendingOrders">
     <div class="col-md-9">
         <table class="table">
           <tr ng-repeat="order in pendingOrders">
             <td>{{order.customerName}}</td>
             <td>{{order.totalPrice}}</td>
             <td>
-              <button type="button" class="btn btn-default" ng-click="showPendingOrder()">
+              <button type="button" class="btn btn-default" ng-click="getPendingOrder(order)">
                 Continue
               </button>
             </td>
@@ -169,7 +175,19 @@
   
 
   <div class="row" ng-if="showSearchProduct">
-    <div class="col-md-2"></div>
+    <div class="col-md-8">
+      
+    </div>
+  </div>
+
+
+
+
+
+
+
+  <div class="row" ng-if="showSearchProduct">
+    
     <div class="col-md-8">
       <!--Search Items -->
       <!-- Single button -->
@@ -399,7 +417,7 @@
             <td>
               <!-- editable username (text with validation) -->
               <span editable-text="item.onHandQu" e-name="onHandQu" e-form="rowform" onbeforesave="checkQuantity($data, user.id)" type="number" e-required>
-                {{ item.onHandQu || 'empty' }}
+                {{ item.onHandQu || item.quantity }}
               </span>
             </td>
             <td>
