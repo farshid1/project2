@@ -10,3 +10,7 @@ body { padding-top:30px; }
     padding: 10px 12px;
     pointer-events: none;
 }
+.form-horizontal .control-label{
+/* text-align:right; */
+text-align:left;
+}

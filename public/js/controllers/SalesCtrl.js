@@ -1,5 +1,5 @@
-angular.module('SalesCtrl', ['SalesService'])
-.controller('SalesController', function ($scope, $http, limitToFilter, SalesService) {
+angular.module('SalesCtrl', ['SalesService', 'UserService'])
+.controller('SalesController', function ($scope, $http, $rootScope, $location, limitToFilter, SalesService, UserService) {
 
   $scope.products = [];
   $scope.orders = [];
@@ -33,19 +33,54 @@ angular.module('SalesCtrl', ['SalesService'])
     $scope.showPendingOrders = true;
     $scope.init();
   }
+
+  //add this init inventory ctrl
   $scope.init = function() {
-    SalesService.getPendingOrders()
-    .then
-    (
+    UserService.postData({})
+    .then(
       function(response) {
-        //console.log(response.data);
-        $scope.pendingOrders = [];
-        $scope.pendingOrders = angular.copy(response.data);
+          if(response.data.message) {
+              console.log(response.data.message);
+          }
+          else {
+              // $rootScope.user = angular.copy(response.data);
+              // $rootScope.isLoggedin = true;
+              console.log("sending user auth request");
+              switch(response.data.role) {
+                  case 1:
+                      $location.path('/admin');
+                      break;
+                  case 2:
+                    SalesService.getPendingOrders()
+                    .then
+                    (
+                      function(response) {
+                        //console.log(response.data);
+                        $scope.pendingOrders = [];
+                        $scope.pendingOrders = angular.copy(response.data);
+                      },
+                      function(response) {
+                        
+                      }
+                    );
+                    break;
+                  case 3:
+                      $location.path('/inventory');
+                      break;
+                  default:
+                      $location.path('/login');
+                      break;
+              }
+
+
+          }
       },
       function(response) {
-        
+
       }
     );
+   
+    
   };
   $scope.getPendingOrder = function(order) {
     console.log(order.products);
@@ -199,7 +234,7 @@ angular.module('SalesCtrl', ['SalesService'])
   };
 
   $scope.showAddCustomerForm = function() {
-    $scope.showAddCustomer = true;
+    $scope.showAddCustomer = !$scope.showAddCustomer;
   };
 
   $scope.showEditCustomerForm = function(item) {

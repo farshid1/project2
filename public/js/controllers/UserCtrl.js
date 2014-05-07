@@ -19,8 +19,6 @@ angular.module('UserCtrl', ['UserService', 'mySocket']).controller('UserControll
                         console.log(response.data.message);
                     }
                     else {
-                        console.log(response.data.role);
-                        mySocket.emit('log in', r.data);
                         $rootScope.user = angular.copy(response.data);
                         $rootScope.isLoggedin = true;
                         switch($rootScope.user.role) {
@@ -43,24 +41,7 @@ angular.module('UserCtrl', ['UserService', 'mySocket']).controller('UserControll
 
                 }
             );
-            // console.log($rootScope.user);
-            // if ($rootScope.user) {
-            //     //console.log($rootScope.isLoggedin);
-            //     switch($rootScope.user.role) {
-            //         case 1:
-            //             $location.path('/admin');
-            //             break;
-            //         case 2:
-            //             $location.path('/sales');
-            //             break;
-            //         case 3:
-            //             $location.path('/inventory');
-            //             break;
-            //         default:
-            //             $location.path('/login');
-            //             break;
-            //     }
-            // };
+           
         };
         
         $scope.submit = function(formData) {
@@ -70,6 +51,9 @@ angular.module('UserCtrl', ['UserService', 'mySocket']).controller('UserControll
             .then (
                 function(r) {
                 console.log(r.data.role);
+                console.log(r.data.role);
+                mySocket.emit('log in', r.data);
+                console.log("emitted");
                 $rootScope.user = angular.copy(r.data);
                 $rootScope.isLoggedin = true;
                 switch($rootScope.user.role) {

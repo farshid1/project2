@@ -1,41 +1,5 @@
 <div class="container-fluid well" ng-init="init()">
 
-<!--<div class="row">
-   <table class="table table-striped" ng-show="showResult">
-    <thead>
-      <tr>
-        <th>UPC</th>
-        <th>Name</th>
-        <th>Quantity</th>
-        <th>Price</th>
-        <th>Add</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr ng-repeat="product in products | limitTo:numLimit" >
-        <td>{{product.upc}}</td>
-        <td>{{product.name}}</td>
-        <td>
-          <a href="#" editable-text="1">
-          {{product.onHandQu || 'empty'}}
-          </a>
-          <span class="glyphicon glyphicon-plus-sign"></span>
-          <span class="glyphicon glyphicon-minus-sign"></span>
-        </td>
-        <td>{{product.price}}</td>
-        <td>
-          <button class="btn btn-default" 
-                  ng-click="addProductToOrder(product)" 
-                  ng-disable="disableButton()"> 
-            <span class="glyphicon glyphicon-plus-sign" ></span>
-            Add
-          </button>
-        </td>
-        
-      </tr>
-    </tbody> 
-  </table>
-</div>-->
   <div class="row row-centered">
     <div class="col-md-6">
       <div class="left-inner-addon">
@@ -59,7 +23,7 @@
         Add Customer
       </button>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-2" ng-if="!showPendingOrders">
       <button ng-click="showAllPendingOrders()" class="btn btn-default">
         <span class="glyphicon glyphicon-plus" ></span>
         Pending Orders
@@ -79,7 +43,7 @@
 
 
 
-  <div class="row row-centered" ng-if="showCustomerDetails">
+  <div class="row row-centered" style="margin-top:20px" ng-if="showCustomerDetails">
     <div class="col-md-10">
       <form editable-form name="editableForm" onaftersave="saveUser()">
         <table class="table">
@@ -231,7 +195,7 @@
               <td>{{product.upc}}</td>
               <td>{{product.name}}</td>
               <td>
-                <a href="#" editable-text="1">
+                <a href="#" editable-text="product.onHandQu">
                 {{product.onHandQu || 'empty'}}
                 </a>
                 <!-- <span class="glyphicon glyphicon-plus-sign"></span>
