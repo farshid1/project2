@@ -1,5 +1,5 @@
-angular.module('InventoryCtrl', ['InventoryService'])
-.controller('InventoryController', function ($scope, $http, InventoryService, limitToFilter, mySocket) {
+angular.module('InventoryCtrl', ['InventoryService', 'UserService'])
+.controller('InventoryController', function ($scope, $http,$location, InventoryService, limitToFilter, mySocket, UserService) {
 
   $scope.inventory = {};
   $scope.newItem = {};
@@ -8,6 +8,41 @@ angular.module('InventoryCtrl', ['InventoryService'])
   $scope.showAddItem = false;
   $scope.showEditItem = false;
   $scope.showResult = false;
+
+  $scope.init = function() {
+    UserService.postData({})
+    .then(
+      function(response) {
+        console.log(response.data, "from user service post");
+          if(response.data.message) {
+              console.log(response.data.message);
+          }
+          else {
+
+              switch(response.data.role) {
+
+                  case 1:
+                      $location.path('/admin');
+                      break;
+                  case 2:
+                    $location.path('/sales');
+                      break;
+                  case 3:
+                      $location.path('/inventory');
+                      break;
+                  default:
+                      $location.path('/login');
+                      break;
+              }
+
+
+          }
+      },
+      function(response) {
+
+      }
+    );
+  };
 
   $scope.increment = function(product) {
       console.log("Inc");
@@ -18,11 +53,18 @@ angular.module('InventoryCtrl', ['InventoryService'])
       console.log("Dec");
       product.quantity--;
   }
-
-  mySocket.emit('my other event', { my: 'data' });
-  mySocket.on('news', function (data) {
-    console.log(data);
-    mySocket.emit('my other event', { my: 'data' });
+  var messageId;
+  //mySocket.emit('my other event', { my: 'data' });
+  mySocket.on('notification', function (data) {
+    console.log("messageId");
+    console.log(data.quantity);
+    if(data.messageId !== messageId){
+        messageId = data.messageId;
+        console.log("in notification:")
+        if(data.quantity){
+          console.log(data);
+        $("#notifications").append('<li class="'+data.title+'"> <b>'+data.quantity+'</b> of a new item <b>'+data.name+'</b> was added to the inventory for: $<b>'+data.price+'</b></li>');
+      }}
   });
 
   // $scope.products = function(product) {
@@ -58,7 +100,7 @@ angular.module('InventoryCtrl', ['InventoryService'])
 
   $scope.showEditForm = function(item) {
     $scope.showEditItem = true;
-    console.log(item);
+    //console.log(item);
     $scope.editItem.upc = item.upc;
     $scope.editItem.name = item.name;
     $scope.editItem.quantity = item.quantity;
@@ -75,8 +117,8 @@ angular.module('InventoryCtrl', ['InventoryService'])
       function(r) {
         var send = r.data;
         send.notifyRole = 2;
-        send.title = "added inventory";
-        mySocket.emit('notification', send);
+        send.title = "added_inventory";
+        mySocket.emit('notify', send);
         // console.log("********************");
         // console.log(r.data);
         // console.log("********************");

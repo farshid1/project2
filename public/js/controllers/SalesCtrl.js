@@ -19,10 +19,17 @@ angular.module('SalesCtrl', ['SalesService', 'UserService'])
   $scope.showCustomerDetails = false;
   $scope.showPendingOrders = true;
 
-  $scope.grandTotal = 0.0;
 
 
 
+  $scope.grandTotal = function() {
+    var total = 0;
+    angular.forEach($scope.orders, function(order) {
+        total += order.quantity * order.price;
+    })
+
+    return total;
+  }
 
   $scope.finalize = function() {
     SalesService.finalizeOrder({customerId: $scope.customer._id})
@@ -115,9 +122,7 @@ angular.module('SalesCtrl', ['SalesService', 'UserService'])
         $scope.showOrder = true;
         $scope.orders = [];
         $scope.orders = angular.copy(order.products);
-        _.each(order.products, function(order) {
-          $scope.grandTotal += order.price;
-        });
+        
 
       },
       function(response) {
@@ -190,6 +195,7 @@ angular.module('SalesCtrl', ['SalesService', 'UserService'])
 
   $scope.addCustomerToOrder = function($item) {
 
+    console.log($item,"customer persumably");
     $scope.orders = [];
     $scope.showOrder = false;
     $scope.customer = angular.copy($item);
@@ -283,11 +289,10 @@ angular.module('SalesCtrl', ['SalesService', 'UserService'])
 
   $scope.addProductToOrder = function($item) {
     
-    $scope.grandTotal += $item.price * $item.quantity;
     var newItem = {
       customerId: $scope.customer._id,
       comment: "",
-      totalPrice: $scope.grandTotal,
+      totalPrice: $scope.grandTotal(),
       upc: $item.upc,
       productName: $item.name,
       quantity: $item.quantity,
@@ -327,21 +332,25 @@ angular.module('SalesCtrl', ['SalesService', 'UserService'])
 
 
 
-
-  $scope.checkName = function(data, id) {
-    if (id === 2 && data !== 'awesome') {
-      return "Username 2 should be `awesome`";
+  $scope.checkQuantity = function(data, qty) {
+    console.log(qty);
+    console.log(data);
+    if(data > qty) {
+      return "You cannot exceed the max quantity";
     }
+
+    // if (id === 2 && data !== 'awesome') {
+      
+    // }
   };
 
 
 
   $scope.editItem = function(item){
-    //$scope.grandTotal += item.price * item.quantity;
     var item = {
       customerId: $scope.customer._id,
       comment: '',
-      totalPrice: $scope.grandTotal,
+      totalPrice: $scope.grandTotal(),
       upc: item.upc,
       productName: item.name,
       quantity: item.quantity,
@@ -365,7 +374,6 @@ angular.module('SalesCtrl', ['SalesService', 'UserService'])
   $scope.removeItem = function(index, item) {
     
     $scope.orders.splice(index, 1);
-    //$scope.grandTotal -= newItem.price * newItem.quantity;
     console.log($scope.orders.length,"orders length *****");
     var item = {
       customerId: $scope.customer._id,

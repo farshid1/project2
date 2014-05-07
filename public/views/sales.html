@@ -53,7 +53,7 @@
               <span class="title">Customer Name: </span>
             </td>
             <td>
-              <span editable-text="customer.firstName + ' ' + customer.lastName" e-name="name"  e-required>{{ customer.firstName + ' ' + customer.lastName || 'empty' }}</span>
+              <span editable-text="customer.firstName" e-name="name"  e-required>{{ customer.firstName + ' ' + customer.lastName || 'empty' }}</span>
             </td>
           </tr>
           <tr> 
@@ -62,7 +62,8 @@
               <span class="title">Email Address: </span>
             </td>
             <td>
-              <span editable-text="customer.name" e-name="email"  e-required>{{customer.email  || 'empty' }}</span>
+              <span editable-text="customer.email" e-name="email"  e-required>{{customer.email }}
+              </span>
             </td>
           </tr>
           <tr>
@@ -72,7 +73,7 @@
             </td>
             <td>
               <span editable-text="customer.phoneNumber" e-name="phoneNumber" e-required>
-              {{ customer.phoneNumber || 'empty' }}</span>
+              {{ customer.phoneNumber }}</span>
             </td> 
           </tr>
           <tr>
@@ -81,7 +82,7 @@
               <span class="title">Address: </span>
             </td>
             <td>
-              <span editable-text="customer.address" e-name="address" e-required>{{ customer.address || 'empty' }}</span>
+              <span editable-text="customer.address" e-name="address" e-required>{{ customer.address }}</span>
             </td> 
           </tr>
         </table>
@@ -186,7 +187,7 @@
             <tr>
               <th>UPC</th>
               <th>Name</th>
-              <th>Quantity</th>
+              <th>Available Quantity</th>
               <th>Price</th>
               <th>Add</th>
             </tr>
@@ -196,8 +197,12 @@
               <td>{{product.upc}}</td>
               <td>{{product.name}}</td>
               <td>
-                <a href="#" editable-text="product.quantity">
-                {{product.quantity || 'empty'}}
+                <a href="#" 
+                   editable-number="product.quantity" 
+                   e-max="{{product.quantity}}" 
+                   e-min="1"
+                   onbeforesave="checkQuantity($data, product.quantity)">
+                {{product.quantity }}
                 </a>
                 <!-- <span class="glyphicon glyphicon-plus-sign"></span>
                 <span class="glyphicon glyphicon-minus-sign"></span> -->
@@ -327,10 +332,10 @@
               
             </td>
             <td>
-                {{ item.price  }}
+                {{ item.price | currency }}
             </td>
             <td>
-                {{ item.price * item.quantity }}
+                {{ item.price * item.quantity | currency }}
             </td>
             <td style="white-space: nowrap">
               <!-- form -->
@@ -350,8 +355,8 @@
             
             <tr>
               <td>
-                <span>Grand Total:</span>
-                <span>{{grandTotal}}</span>
+                <span class="title">Grand Total:</span>
+                <span>{{grandTotal() | currency}}</span>
               </td>
               <td rowspan="3">
                 <button class="btn btn-success" ng-click="finalize()">Finalize</button>

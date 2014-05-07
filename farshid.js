@@ -7,6 +7,7 @@ var mongoose = require('mongoose');
 var user = require('./app/models/user.js');
 var users = [];
 var _ = require('underscore');
+var messageId = 0;
 
 // configuration ===========================================
 
@@ -73,9 +74,11 @@ io.sockets.on('connection', function (socket) {
         console.log(users.length);
     });
 
-    socket.on('notification', function (data) {
+    socket.on('notify', function (data) {
     	console.log("notification received");
     	console.log(users.length);
+    	data.messageId = messageId;
+    	messageId ++;
     	_.each (users, function(user){
     		if(user.role == data.notifyRole || user.role == 1){
     			console.log("user found");

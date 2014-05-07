@@ -31,6 +31,13 @@ angular.module('InventoryService', []).factory('InventoryService',['$http','$q',
 				method: 'POST',
 				header: {'Content-Type':'application/json'}
 			});
+		},
+		logOut: function() {
+			return $http({
+				url: '/api/user/logout',
+				method: 'GET',
+				header: {'Content-Type':'application/json'}
+			});
 		}
 	}
 
