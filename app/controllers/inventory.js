@@ -162,7 +162,7 @@ exports.searchItem = function(req,res){
     if (uid === undefined)
       return res.redirect("/login");
 
-console.log(req.body, "from searchItem");
+
     var upcU = req.body.upc;
   
   var nameU = req.body.creteria;
@@ -179,7 +179,6 @@ console.log(req.body, "from searchItem");
 
   else{
     Inv.find({name: new RegExp(nameU, 'i')}, function(err, doc){
-      if (err) throw err;
         console.log("name search");
         res.jsonp(doc);
         console.log(nameU);

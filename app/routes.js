@@ -28,7 +28,9 @@ module.exports = function(app) {
 	app.post('/api/sales/showAllPendingCart', user.isAuthenticated,sales.showAllPendingCart);
 	app.post('/api/sales/editOrder', user.isAuthenticated,sales.editOrder);
 	app.post('/api/sales/deleteItem', user.isAuthenticated,sales.deleteItem);
+	app.post('/api/sales/getCustmoerInfoById', user.isAuthenticated,sales.getCustmoerInfoById);
 	
+
 
 
 
