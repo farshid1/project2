@@ -1,11 +1,5 @@
 angular.module('SalesCtrl', ['SalesService'])
 .controller('SalesController', function ($scope, $http, limitToFilter, SalesService) {
-  
-  //http://stackoverflow.com/questions/1187518/javascript-array-difference
-  // Array.prototype.diff = function(a) {
-  //   return this.filter(function(i) {return a.indexOf(i) < 0;});
-  // };
-
 
   $scope.products = [];
   $scope.orders = [];
@@ -20,20 +14,30 @@ angular.module('SalesCtrl', ['SalesService'])
   $scope.showResult = false;
   $scope.showOrder = false;
   $scope.disableAddButton = false;
+  $scope.showSearchProduct = false;
+  $scope.showSearchCustomer = true;
 
 
-
-  //$scope.checkUpc = function()
+  $scope.removeCustomer = function() {
+    console.log($scope.customerQuery);
+    // if ($scope.customerQuery.length === 0) {
+    //   $scope.customer = {};
+    // }
+  }
   $scope.searchCustomers = function(customer) {
-      console.log(customer);
+      
     return SalesService.getCustomers(customer)
     .then(
       function(response) {
         if (response.data.message) {
-          console.log(response.data.message);
+          //console.log(response.data.message);
         }
         else {
-          console.log(response.data);
+          //console.log(response.data);
+          if($scope.customers.length > 0) {
+            $scope.customers = [];
+          }
+          console.log($scope.customers);
           for (var i = 0; i < response.data.length; i++ ) {
             $scope.customers.push(response.data[i]);
           }
@@ -50,7 +54,9 @@ angular.module('SalesCtrl', ['SalesService'])
   $scope.addCustomerToOrder = function($item) {
 
     $scope.customer = angular.copy($item);
-    console.log($scope.customer);
+    $scope.showSearchCustomer = false;
+    $scope.showSearchProduct = true;
+    //console.log($scope.customer);
     // SalesService.getCustomer(customerID)
     // .then (
     //   function(response) {
@@ -64,17 +70,17 @@ angular.module('SalesCtrl', ['SalesService'])
 
   $scope.addCustomer= function() {
     $scope.newCustomerMaster = angular.copy($scope.newCustomer);
-    console.log($scope.newCustomerMaster);
+    //console.log($scope.newCustomerMaster);
     SalesService.addCustomer($scope.newCustomerMaster)
     .then (
       function(response) {
         if(response.data.message) {
-          console.log(response.data.message);
+          //console.log(response.data.message);
         }
         else {
           $scope.newCustomerMaster = {}
           $scope.reset();
-          console.log("new customer added")
+          //console.log("new customer added")
 
         }
         
@@ -88,44 +94,32 @@ angular.module('SalesCtrl', ['SalesService'])
   $scope.reset = function() {
     $scope.newCustomer = angular.copy($scope.newCustomerMaster);
   };
-  $scope.searchItem = function() {
-    //console.log($scope.query);
-    if($scope.query.length > 1) {
-      SalesService.getProducts($scope.query)
+
+  $scope.searchItem = function(query) {
+    //console.log(query);
+    if(query.length > 0) {
+      SalesService.getProducts(query)
       .then(
         function(response) {
-          console.log(_.difference(angular.fromJson(angular.toJson(response.data)), angular.fromJson(angular.toJson($scope.orders))));
+          var orderArray = angular.copy(angular.fromJson(angular.toJson($scope.orders)));
+          var responseArray = angular.copy(angular.fromJson(angular.toJson(response.data)));
+          console.log(orderArray, "this is the order");
+          console.log(responseArray, "this is the response");
+          console.log(_.difference(responseArray, orderArray));
           // console.log(angular.toJson($scope.orders), " orders to Json");
           // console.log(angular.toJson(response.data), " response to Json");
 
-          // console.log(angular.fromJson(angular.toJson($scope.orders)), " orders from Json");
-          // console.log(angular.fromJson(angular.toJson(response.data)), " response to Json");
+           //console.log(angular.fromJson(angular.toJson($scope.orders)), " orders from Json");
+           //console.log(angular.fromJson(angular.toJson(response.data)), " response to Json");
           //console.log(_.difference(response.data, angular.toJson($scope.orders)));
+//           var bIds = {};
+//           angular.fromJson(angular.toJson($scope.orders)).forEach(function(obj){
+//     bIds[obj.upc] = obj;
+// });
+          //console.log(angular.fromJson(angular.toJson(response.data)).filter(function(obj){return !(obj.upc in bIds);}));
           $scope.showResult = true;
           $scope.products = angular.copy(_.difference(angular.fromJson(angular.toJson(response.data)), angular.fromJson(angular.toJson($scope.orders))));
-          //console.log($scope.products);
-
-          // if($scope.orders.length === 0 && response.data.length > 0) {
-          //   $scope.products = angular.copy(response.data);
-          // }
-          // else {
-          //   if(response.data.length > 0) {
-          //     console.log("what up");
-          //     for(var i = 0; i < response.data.length; i++) {
-
-                
-          //       for(var j = 0; j < $scope.orders.length; j++) {
-          //         if($scope.orders[j].upc !== response.data[i].upc) {
-          //           $scope.showResult = true;
-          //           $scope.orders.push(response.data[i])
-          //         }
-          //       }
-                
-          //     }
-          //   }
-          // }
             
-          
         },
         function () {
           alert('failed');
@@ -137,34 +131,34 @@ angular.module('SalesCtrl', ['SalesService'])
     }
   };
 
-
   $scope.showAddCustomerForm = function() {
     $scope.showAddCustomer = true;
   };
 
   $scope.showEditCustomerForm = function(item) {
     $scope.showEditCustomer = true;
-    console.log(item);
+    //console.log(item);
     $scope.editCustomer.upc = item;
   };
 
   $scope.addProductToOrder = function($item) {
     
-    // var newItem = {
-    //   customerId: $scope.customer._id,
-    //   comment: "",
-    //   totalPrice: $item.price,
-    //   upc: $item.price,
-    //   productName: $item.name,
-    //   quantity: $item.onHandQu
-    // };
+    var newItem = {
+      customerId: $scope.customer._id,
+      comment: "",
+      totalPrice: $item.price,
+      upc: $item.price,
+      productName: $item.name,
+      quantity: $item.onHandQu
+    };
     //console.log($item);
+    //console.log($scope.customer, "customer");
     $scope.showOrder = true;
     $scope.disableAddButton = true;
     $scope.orders.push($item);
     //console.log($scope.orders);
 
-    SalesService.addToOrder($item)
+    SalesService.addToOrder(newItem)
     .then(
       function(response) {
         //console.log(response.data);
@@ -202,9 +196,52 @@ angular.module('SalesCtrl', ['SalesService'])
     return $http.post('/saveUser', data);
   };
 
-  // remove user
-  $scope.removeItem = function(index) {
-    $scope.users.splice(index, 1);
+
+  $scope.editItem = function(item){
+    var item = {
+      customerId: $scope.customer._id,
+      comment: '',
+      totalPrice: item.price,
+      upc: item.upc,
+      productName: item.name,
+      quantity: item.quantity,
+      price: item.price,
+      customerName: item.firstName + ' ' + item.lastName,
+      closeOrder: $scope.orders.length === 1 ? '1' : '0'
+    };
+  }
+  // remove item
+  $scope.removeItem = function(index, item) {
+    
+    var item = {
+      customerId: $scope.customer._id,
+      comment: '',
+      totalPrice: item.price,
+      upc: item.upc,
+      productName: item.name,
+      quantity: item.quantity,
+      price: item.price,
+      customerName: item.firstName + ' ' + item.lastName,
+      closeOrder: $scope.orders.length === 1 ? '1' : '0'
+    };
+
+    console.log(item);
+    SalesService.deleteOrder(item)
+    .then(
+      function(response) {
+        if($scope.orders.length > 0) {
+          $scope.orders.splice(index, 1);
+          $scope.showOrder = false;
+        }
+        else {
+          $scope.orders.splice(index, 1);
+        }
+        console.log(response.data);
+      },
+      function(response) {
+        console.log(response.data);
+      }
+    );
   };
 
   // add user

@@ -1,51 +1,81 @@
-
 <form class="form-horizontal">
 <fieldset>
 
 <!-- Form Name -->
-<legend>Add Product</legend>
+<legend>Add User</legend>
 
 <!-- Text input-->
 <div class="form-group">
-  <label class="col-md-4 control-label" for="upc">Product UPC</label>  
+  <label class="col-md-4 control-label" for="firstnametextinput">Enter First Name</label>  
   <div class="col-md-4">
-  <input id="upc" name="upc" type="text" placeholder="Enter UPC" class="form-control input-md">
+  <input ng-model="user.firstName" type="text" placeholder="First Name" class="form-control input-md">
     
   </div>
 </div>
 
 <!-- Text input-->
 <div class="form-group">
-  <label class="col-md-4 control-label" for="name">Product Name</label>  
+  <label class="col-md-4 control-label" for="lastnametextinput">Enter Last Name</label>  
   <div class="col-md-4">
-  <input id="name" name="name" type="text" placeholder="Enter Name" class="form-control input-md">
+  <input ng-model="user.lastName" type="text" placeholder="Last Name" class="form-control input-md">
     
   </div>
 </div>
 
 <!-- Text input-->
 <div class="form-group">
-  <label class="col-md-4 control-label" for="quantity">Product Quantity</label>  
+  <label class="col-md-4 control-label" for="phonetextinput">Enter Phone Number</label>  
   <div class="col-md-4">
-  <input id="quantity" name="quantity" type="text" placeholder="Enter Quantity" class="form-control input-md">
+  <input ng-model="user.phoneNumber" type="text" placeholder="Phone Number" class="form-control input-md">
     
   </div>
 </div>
 
 <!-- Text input-->
 <div class="form-group">
-  <label class="col-md-4 control-label" for="price">Product Price</label>  
+  <label class="col-md-4 control-label" for="emailtextinput">Enter Email Address</label>  
   <div class="col-md-4">
-  <input id="price" name="price" type="text" placeholder="Enter Price" class="form-control input-md">
+  <input ng-model="user.username" type="text" placeholder="Email Address" class="form-control input-md">
     
   </div>
 </div>
+
+<!-- Password input-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="repasswordinput">Password Input</label>
+  <div class="col-md-4">
+    <input ng-model="user.password" type="password" placeholder="Enter Password" class="form-control input-md">
+    
+  </div>
+</div>
+
+<!-- Password input-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="passwordinput">Password Input</label>
+  <div class="col-md-4">
+    <input ng-model="user.password" type="password" placeholder="ReEnter Password" class="form-control input-md">
+    
+  </div>
+</div>
+
+<!-- Select Basic -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="roleselectbasic">Select Role</label>
+  <div class="col-md-4">
+    <select ng-model="user.role" class="form-control">
+      <option value="1">Admin</option>
+      <option value="2">Sales</option>
+      <option value="3">Inventory</option>
+    </select>
+  </div>
+</div>
+
 
 <!-- Button -->
 <div class="form-group">
-  <label class="col-md-4 control-label" for="addproduct"></label>
+  <label class="col-md-4 control-label" for="singlebutton">Single Button</label>
   <div class="col-md-4">
-    <button id="addproduct" name="addproduct" class="btn btn-primary">Add Product</button>
+    <button id="singlebutton"  class="btn btn-primary" ng-click="addUSer()">Sign Up</button>
   </div>
 </div>
 

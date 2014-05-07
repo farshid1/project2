@@ -7,6 +7,7 @@ angular.module('SalesService', [])
 
 	return { 
 		getProducts: function(formData) {
+			console.log(formData);
 			return $http({
 				url: '/api/inventory/searchItem',
 				data: {creteria: formData},
@@ -27,7 +28,7 @@ angular.module('SalesService', [])
 		getCustomers: function(formData) {
 			return $http({
 				url: '/api/sales/searchCustomer',
-			 	data: {name: formData},
+			 	data: {customerName: formData},
 			 	method: 'POST',
 			 	header: {'Content-Type':'application/json'}
 			});
@@ -42,6 +43,22 @@ angular.module('SalesService', [])
 		addToOrder: function(item) {
 			return $http({
 				url: '/api/sales/addToCart',
+				data: item,
+			 	method: 'POST',
+			 	header: {'Content-Type':'application/json'}
+			});
+		},
+		editOrder: function(item) {
+			return $http({
+				url: '/api/sales/editOrder',
+				data: item,
+			 	method: 'POST',
+			 	header: {'Content-Type':'application/json'}
+			});
+		},
+		deleteOrder: function(item) {
+			return $http({
+				url: '/api/sales/deleteItem',
 				data: item,
 			 	method: 'POST',
 			 	header: {'Content-Type':'application/json'}

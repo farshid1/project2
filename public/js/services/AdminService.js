@@ -6,7 +6,7 @@ angular.module('AdminService', []).factory('AdminService',['$http','$q', functio
 
 
 	return { 
-		function(formData) {
+		addUser: function(formData) {
 			return $http({
 				url: '/api/user/add',
 				data: JSON.stringify(formData),

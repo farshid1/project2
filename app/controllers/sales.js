@@ -10,7 +10,7 @@ var _ = require('underscore');
 //input : customerNameFE
 
 function doesCustomerExist(req, res) {
-    var Cust_email = req.body.customerNameody,
+    var Cust_email = req.body.customerName,
         sales_PersId = req.session.uid;
     console.log(Cust_email);
    

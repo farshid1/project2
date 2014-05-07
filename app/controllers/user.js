@@ -18,11 +18,11 @@ function doesUserExist(req, res, callback){
       }
       else{
         //username does not exist, create it
+        console.log("User does not exist");
         callback(req);
-        res.redirect("/login/success");
-      }
-    });
-  
+        res.jsonp({message :" The user has been added"});
+    }
+ });
 }
 
 //Create the user
@@ -35,10 +35,19 @@ function createUser(req){
    phone = req.body.phoneNumber,
    urole = req.body.role;
 
-    User.save({email: user, password : pass, firstName :first, lastName: last, phoneNumber :phone,
-      role: urole}, function(error, doc){if (err) {throw err;}});
-  
-  return;
+   var docs = {email: user, password : pass, firstName :first, lastName: last, phoneNumber :phone,
+      role: urole} ;
+
+     var temp = new User(docs);
+                temp.save(function (err, admin) {
+                    if (err) {
+                        return console.error(err);
+                    } else {
+                        console.log('message : "The new order has beeen added into the cart');
+                    }
+
+
+                });
 }
 //called on 'user/add' POST
 exports.add = function(req, res) {

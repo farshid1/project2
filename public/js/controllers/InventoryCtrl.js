@@ -20,7 +20,7 @@ angular.module('InventoryCtrl', ['InventoryService'])
   }
 
   mySocket.emit('my other event', { my: 'data' });
-  mySocket.on('take', function (data) {
+  mySocket.on('news', function (data) {
     console.log(data);
     mySocket.emit('my other event', { my: 'data' });
   });
@@ -68,7 +68,6 @@ angular.module('InventoryCtrl', ['InventoryService'])
   };
 
   $scope.addItem = function(newItem) {
-    mySocket.emit('new:item', { my: 'item added' });
     InventoryService.addItem(newItem)
     .then(
       function(r) {

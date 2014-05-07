@@ -1,33 +1,81 @@
-<div class="container-fluid">
+<div class="container-fluid well">
 
+<!--<div class="row">
+   <table class="table table-striped" ng-show="showResult">
+    <thead>
+      <tr>
+        <th>UPC</th>
+        <th>Name</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Add</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="product in products | limitTo:numLimit" >
+        <td>{{product.upc}}</td>
+        <td>{{product.name}}</td>
+        <td>
+          <a href="#" editable-text="1">
+          {{product.onHandQu || 'empty'}}
+          </a>
+          <span class="glyphicon glyphicon-plus-sign"></span>
+          <span class="glyphicon glyphicon-minus-sign"></span>
+        </td>
+        <td>{{product.price}}</td>
+        <td>
+          <button class="btn btn-default" 
+                  ng-click="addProductToOrder(product)" 
+                  ng-disable="disableButton()"> 
+            <span class="glyphicon glyphicon-plus-sign" ></span>
+            Add
+          </button>
+        </td>
+        
+      </tr>
+    </tbody> 
+  </table>
+</div>-->
   <div class="row row-centered">
-    <div class="col-md-2"></div>
-    <div class="col-md-8">
-      <!--Sidebar content-->
-      
-      <div class="well">
-        <div class="left-inner-addon">
-          <i class="glyphicon glyphicon-search"></i>
-          <input ng-model="customerQuery" type="text" 
-                 typeahead="suggestion.firstName+' '+suggestion.lastName for suggestion in searchCustomers($viewValue)"
-                 typeahead-editable="false"
-                 typeahead-on-select="addCustomerToOrder($item)"
-                 typeahead-min-length="3"  
-                 class="form-control" 
-          />
-        </div>
-        <!-- <ul class="list-group">
-            <li class="list-group-item"><a ng-click="showAddCustomerForm()">Add Customer</a></li>
-        </ul> -->
+    <div class="col-md-6">
+      <div class="left-inner-addon">
+        <i class="glyphicon glyphicon-search"></i>
+        <input  placeholder="Search Customer"
+                ng-model="customerQuery" 
+                type="text"
+                typeahead="suggestion.firstName+' '+suggestion.lastName for suggestion in searchCustomers($viewValue)"
+                typeahead-editable="false"
+                typeahead-on-select="addCustomerToOrder($item)"
+                typeahead-min-length="3"  
+                class="form-control" 
+        />
+        <!-- Add to Order Button -->
+        
       </div>
-
     </div>
-    
+    <div class="col-md-2">
+      <button ng-click="showAddCustomerForm()" class="btn btn-default">
+        <span class="glyphicon glyphicon-plus" ></span>
+        Add Customer
+      </button>
+    </div>
   </div>
 
-  <div class="row">
+
+    
+      <!--Sidebar content-->
+      
+      <!-- <div  ng-if="showSearchCustomer"> -->
+        
+
+        
+
+         
+  
+
+  <div class="row" ng-if="showSearchProduct">
     <div class="col-md-2"></div>
-    <div class="well col-md-8">
+    <div class="col-md-8">
       <!--Search Items -->
       <!-- Single button -->
       <div class="row"> 
@@ -44,7 +92,11 @@
 
         <div class="left-inner-addon">
           <i class="glyphicon glyphicon-search"></i>
-          <input ng-model="query" type="text" ng-change="searchItem()" class="form-control" />
+          <input  ng-model="query" 
+                  type="text" 
+                  ng-change="searchItem(query)" 
+                  class="form-control" 
+          />
         </div>
       </div>
 
@@ -66,7 +118,9 @@
               <td>{{product.upc}}</td>
               <td>{{product.name}}</td>
               <td>
-                {{product.onHandQu}}
+                <a href="#" editable-text="1">
+                {{product.onHandQu || 'empty'}}
+                </a>
                 <!-- <span class="glyphicon glyphicon-plus-sign"></span>
                 <span class="glyphicon glyphicon-minus-sign"></span> -->
               </td>
@@ -89,8 +143,6 @@
     </div>
   </div>
 
-<!-- Add to Order Button -->
-  <button  ng-click="showAddCustomerForm()" class="btn btn-default"> Add Customer</button>
   
  <div class="row">
   <div class="col-md-6">
@@ -171,7 +223,7 @@
         <div class="form-group">
           <label class="col-md-4 control-label" for="first">First Name:</label>  
           <div class="col-md-4">
-          <input ng-model="feditCustomer.irst" type="text" placeholder="First Name" class="form-control input-md" required="">
+          <input ng-model="editCustomer.irst" type="text" placeholder="First Name" class="form-control input-md" required="">
             
           </div>
         </div>
@@ -251,7 +303,7 @@
             </td>
             <td>
               <!-- editable username (text with validation) -->
-              <span editable-text="item.onHandQu" e-name="onHandQu" e-form="rowform" onbeforesave="checkQuantity($data, user.id)" e-required>
+              <span editable-text="item.onHandQu" e-name="onHandQu" e-form="rowform" onbeforesave="checkQuantity($data, user.id)" type="number" e-required>
                 {{ item.onHandQu || 'empty' }}
               </span>
             </td>
@@ -263,7 +315,7 @@
             </td>
             <td style="white-space: nowrap">
               <!-- form -->
-              <form editable-form name="rowform" onbeforesave="saveUser($data, user.id)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == user">
+              <form editable-form name="rowform" onbeforesave="editItem(item)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == user">
                 <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
                   save
                 </button>
@@ -273,7 +325,7 @@
               </form>
               <div class="buttons" ng-show="!rowform.$visible">
                 <button class="btn btn-primary" ng-click="rowform.$show()">edit</button>
-                <button class="btn btn-danger" ng-click="removeUser($index)">del</button>
+                <button class="btn btn-danger" ng-click="removeItem($index, item)">del</button>
               </div>  
             </td>
             
@@ -341,6 +393,7 @@
           </tr>
         </tbody>
       </table>
+      
     </div>
     <div class="col-md-2"></div>
     
