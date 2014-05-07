@@ -19,8 +19,26 @@ angular.module('SalesCtrl', ['SalesService', 'UserService'])
   $scope.showCustomerDetails = false;
   $scope.showPendingOrders = true;
 
+  $scope.grandTotal = 0.0;
 
 
+
+
+  $scope.finalize = function() {
+    SalesService.finalizeOrder({customerId: $scope.customer._id})
+    .then(
+      function(response) {
+        $scope.showOrder = false;
+        $scope.showCustomerDetails = false;
+        $scope.customer = {};
+        $scope.orders = [];
+        
+      },
+      function(response) {
+
+      }
+    );
+  };
   $scope.showAllPendingOrders = function() {
     $scope.showAddCustomer = false;
     $scope.showEditCustomer = false;
@@ -39,14 +57,17 @@ angular.module('SalesCtrl', ['SalesService', 'UserService'])
     UserService.postData({})
     .then(
       function(response) {
+        console.log(response.data, "from user service post");
           if(response.data.message) {
               console.log(response.data.message);
           }
           else {
               // $rootScope.user = angular.copy(response.data);
               // $rootScope.isLoggedin = true;
-              console.log("sending user auth request");
+              //console.log(response.data.role);
+
               switch(response.data.role) {
+
                   case 1:
                       $location.path('/admin');
                       break;
@@ -55,12 +76,12 @@ angular.module('SalesCtrl', ['SalesService', 'UserService'])
                     .then
                     (
                       function(response) {
-                        //console.log(response.data);
+                        console.log(response,"pending stuff");
                         $scope.pendingOrders = [];
                         $scope.pendingOrders = angular.copy(response.data);
                       },
                       function(response) {
-                        
+                        //console.log
                       }
                     );
                     break;
@@ -83,7 +104,7 @@ angular.module('SalesCtrl', ['SalesService', 'UserService'])
     
   };
   $scope.getPendingOrder = function(order) {
-    console.log(order.products);
+    //console.log(order.products);
     SalesService.getCustomer(order.customerId)
     .then(
       function(response) {
@@ -94,6 +115,9 @@ angular.module('SalesCtrl', ['SalesService', 'UserService'])
         $scope.showOrder = true;
         $scope.orders = [];
         $scope.orders = angular.copy(order.products);
+        _.each(order.products, function(order) {
+          $scope.grandTotal += order.price;
+        });
 
       },
       function(response) {
@@ -111,7 +135,24 @@ angular.module('SalesCtrl', ['SalesService', 'UserService'])
       function(response) {
         
       }
-    )
+    );
+  };
+  $scope.saveCustomer = function() {
+    console.log('saving cys');
+    SalesService.editCustomer($scope.customer)
+    .then
+    (
+      function(response) {
+        //console.log(response.data);
+        //$scope.customer = angular.copy(response.data);
+        if(response.data.message) {
+          alert("customer saved");
+        }
+      },
+      function(response) {
+        
+      }
+    );
   };
 
   $scope.removeCustomer = function() {
@@ -203,25 +244,22 @@ angular.module('SalesCtrl', ['SalesService', 'UserService'])
       SalesService.getProducts(query)
       .then(
         function(response) {
-          var orderArray = angular.copy(angular.fromJson(angular.toJson($scope.orders)));
-          var responseArray = angular.copy(angular.fromJson(angular.toJson(response.data)));
-          // console.log(orderArray, "this is the order");
-          // console.log(responseArray, "this is the response");
-          // console.log(_.difference(responseArray, orderArray));
-          // console.log(angular.toJson($scope.orders), " orders to Json");
-          // console.log(angular.toJson(response.data), " response to Json");
-
-           //console.log(angular.fromJson(angular.toJson($scope.orders)), " orders from Json");
-           //console.log(angular.fromJson(angular.toJson(response.data)), " response to Json");
-          //console.log(_.difference(response.data, angular.toJson($scope.orders)));
-//           var bIds = {};
-//           angular.fromJson(angular.toJson($scope.orders)).forEach(function(obj){
-//     bIds[obj.upc] = obj;
-// });
-          //console.log(angular.fromJson(angular.toJson(response.data)).filter(function(obj){return !(obj.upc in bIds);}));
+          
+          console.log(response.data, "res data from search item");
+          $scope.products = [];
+          _.each(response.data, function(product){
+            var flag = false;
+            for(var i = 0; i < $scope.orders.length; i++) {
+              if($scope.orders[i].upc === product.upc) {
+                flag = true;
+              }
+            }
+            if(!flag) {
+              $scope.products.push(product);
+            }
+          });
           $scope.showResult = true;
-          $scope.products = angular.copy(_.difference(angular.fromJson(angular.toJson(response.data)), angular.fromJson(angular.toJson($scope.orders))));
-            
+        
         },
         function () {
           alert('failed');
@@ -245,18 +283,20 @@ angular.module('SalesCtrl', ['SalesService', 'UserService'])
 
   $scope.addProductToOrder = function($item) {
     
+    $scope.grandTotal += $item.price * $item.quantity;
     var newItem = {
       customerId: $scope.customer._id,
       comment: "",
-      totalPrice: $item.price,
-      upc: $item.price,
+      totalPrice: $scope.grandTotal,
+      upc: $item.upc,
       productName: $item.name,
-      quantity: $item.onHandQu,
+      quantity: $item.quantity,
       customerName: $scope.customer.firstName + ' ' + $scope.customer.lastName,
       price: $item.price
     };
     //console.log($item);
     //console.log($scope.customer, "customer");
+    
     $scope.showOrder = true;
     $scope.disableAddButton = true;
     $scope.orders.push($item);
@@ -265,7 +305,7 @@ angular.module('SalesCtrl', ['SalesService', 'UserService'])
     SalesService.addToOrder(newItem)
     .then(
       function(response) {
-        //console.log(response.data);
+        console.log(response.data, "response from server");
         $scope.showResult = false;
         $scope.showOrder = true;
         //$scope.orders.push(response.data);
@@ -294,33 +334,14 @@ angular.module('SalesCtrl', ['SalesService', 'UserService'])
     }
   };
 
-  $scope.saveItem = function(data, id) {
-    //$scope.user not updated yet
-    angular.extend(data, {id: id});
-    return $http.post('/saveUser', data);
-  };
 
 
   $scope.editItem = function(item){
+    //$scope.grandTotal += item.price * item.quantity;
     var item = {
       customerId: $scope.customer._id,
       comment: '',
-      totalPrice: item.price,
-      upc: item.upc,
-      productName: item.name,
-      quantity: item.quantity,
-      price: item.price,
-      customerName: item.firstName + ' ' + item.lastName,
-      closeOrder: $scope.orders.length === 1 ? '1' : '0'
-    };
-  }
-  // remove item
-  $scope.removeItem = function(index, item) {
-    
-    var item = {
-      customerId: $scope.customer._id,
-      comment: '',
-      totalPrice: item.price,
+      totalPrice: $scope.grandTotal,
       upc: item.upc,
       productName: item.name,
       quantity: item.quantity,
@@ -329,11 +350,40 @@ angular.module('SalesCtrl', ['SalesService', 'UserService'])
       closeOrder: $scope.orders.length === 1 ? '1' : '0'
     };
 
-    // console.log(item);
+    SalesService.editOrder(item)
+    .then(
+      function(response) {
+        console.log(response.data, "response from server");
+        
+      },
+      function () {
+        alert('failed');
+      }
+    );
+  };
+  // remove item
+  $scope.removeItem = function(index, item) {
+    
+    $scope.orders.splice(index, 1);
+    //$scope.grandTotal -= newItem.price * newItem.quantity;
+    console.log($scope.orders.length,"orders length *****");
+    var item = {
+      customerId: $scope.customer._id,
+      comment: '',
+      totalPrice: item.price,
+      upc: item.upc,
+      productName: item.name,
+      quantity: item.quantity,
+      price: item.price,
+      customerName: item.firstName + ' ' + item.lastName,
+      closeOrder: $scope.orders.length === 1 ? '0' : '1'
+    };
+
+    console.log(item.closeOrder,"close order");
     SalesService.deleteOrder(item)
     .then(
       function(response) {
-        $scope.orders.splice(index, 1);
+        
         if($scope.orders.length === 0) {
           $scope.showOrder = false;
         }

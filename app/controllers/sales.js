@@ -7,31 +7,32 @@ var _ = require('underscore');
 
 
 //searching the customer criteria are first name, last name  and customer id 
-//input : customerNameFE
-
+//input : customerName
 function doesCustomerExist(req, res) {
     var Cust_email = req.body.customerName,
         sales_PersId = req.session.uid;
-    console.log(Cust_email);
-   
-
-
 
     /*Customer.find({}, function (err, result) {
         console.dir(result);
     });*/
 
-    Customer.find({ $or: [{
-        firstName: new RegExp(Cust_email, 'i')} , {lastName: new RegExp(Cust_email, 'i')}
-        ,{email: new RegExp(Cust_email, 'i')}]
+    Customer.find({
+        $or: [{
+            firstName: new RegExp(Cust_email, 'i')
+        }, {
+            lastName: new RegExp(Cust_email, 'i')
+        }, {
+            email: new RegExp(Cust_email, 'i')
+        }]
     }, function (err, doc) {
         if (err) {
-            throw err
+            res.jsonp({
+                message: "ERROR: on checking for customer existance"
+            })
         };
 
         //the customer does not exist, 
-        console.log(doc.length);
-        console.dir(doc);
+        //console.dir(doc);
         if (!doc.length) {
             console.log("Add New Customer Section " + Cust_email + " does not already exist");
 
@@ -75,7 +76,9 @@ exports.addNewCustomer = function (req, res) {
 
     var temp = new Customer(docs);
     temp.save(function (err, admin) {
-        if (err)  res.jsonp({"message": err});
+        if (err) return res.jsonp({
+            message: "ERROR: on saving the new customer"
+        });
         else {
             res.jsonp(admin);
         }
@@ -84,14 +87,13 @@ exports.addNewCustomer = function (req, res) {
 
 };
 
- // Editting the exsiting customer (***** customer id is not changable *** ) and then send back 
- // a succesful object message. 
- // inputs: customerIdFE, customerFirstNameFE,[customerFirstNameFE], [customerPhoneNumberFE],
- // [customerEmailFE],[customerAddressFE] 
-
+// Editting the exsiting customer (***** customer id is not changable *** ) and then send back 
+// a succesful object message. 
+// inputs: customerIdFE, customerFirstNameFE,[customerFirstNameFE], [customerPhoneNumberFE],
+// [customerEmailFE],[customerAddressFE] 
 exports.editCustomer = function (req, res) {
 
-        var sales_PersId = req.session.uid,
+    var sales_PersId = req.session.uid,
         cust_Id = req.body.customerId,
         cust_fName = req.body.customerFirstName,
         cust_lName = req.body.customerLastName,
@@ -99,31 +101,34 @@ exports.editCustomer = function (req, res) {
         cust_email = req.body.customerEmail,
         cust_address = req.body.customerAddress;
 
-      
-        console.log(typeof (cust_Id) );
-        if (sales_PersId === undefined) {
-            return res.redirect("/login");
+    //console.log(typeof (cust_Id) );
+    if (sales_PersId === undefined) {
+        return res.jsonp({
+            message: "Authentication failed"
+        });
+    }
+
+    Customer.update({
+        _id: cust_Id
+    }, {
+        firstName: cust_fName,
+        lastName: cust_lName,
+        phoneNumber: cust_phNum,
+        email: cust_email,
+        address: cust_address
+    }, function (error, doc) {
+        if (error) {
+            return res.jsonp({
+                message: "ERROR: on updating the customer "
+            });
+        } else {
+
+            res.jsonp({
+                message: "Customer information was succesfuly edited "
+            });
         }
 
-        Customer.update({
-            _id: cust_Id},{
-            firstName: cust_fName,
-            lastName: cust_lName,
-            phoneNumber: cust_phNum,
-            email: cust_email,
-            address: cust_address
-        }, function (error, doc) {
-            if (error) {
-               
-                throw error;
-            } else {
-
-                res.jsonp({
-                    message: "Customer information was succesfuly edited "
-                });
-            }
-
-        });
+    });
 };
 
 
@@ -133,11 +138,12 @@ exports.searchCustomer = function (req, res) {
     var sales_PersId = req.session.uid;
 
     if (sales_PersId === undefined) {
-        return res.redirect("/login");
+        return res.jsonp({
+            message: "Authentication failed"
+        });
     }
 
-
-    console.log("Here searchCustomer");
+    //console.log("searchCustomer");
     doesCustomerExist(req, res);
 
 };
@@ -149,8 +155,8 @@ exports.searchCustomer = function (req, res) {
 // inputs : customerIdFE, commentFE, totalPriceFE , upcFE, productNameFE, quantityFE,priceFE
 exports.addToCart = function (req, res) {
 
-     
-    var sales_PersId = req.session.uid,      
+
+    var sales_PersId = req.session.uid,
         cust_Id = req.body.customerId,
         product_comments = req.body.comment,
         total_Price = req.body.totalPrice,
@@ -163,7 +169,9 @@ exports.addToCart = function (req, res) {
 
 
     if (sales_PersId === undefined) {
-        return res.redirect("/login");
+        return res.jsonp({
+            message: "couldn't find the sale person"
+        });
     }
 
 
@@ -174,8 +182,9 @@ exports.addToCart = function (req, res) {
         },
         function (err, doc) {
             if (err) {
-
-                throw err;
+                return res.jsonp({
+                    message: "ERROR: finding the sales person"
+                });
             }
 
             if (doc) {
@@ -186,7 +195,7 @@ exports.addToCart = function (req, res) {
                     state: 0
                 }, {
                     salesPersonId: sales_PersId,
-                    customerName : customer_name,
+                    customerName: customer_name,
                     customerId: cust_Id,
                     comments: product_comments,
                     totalPrice: total_Price,
@@ -203,7 +212,9 @@ exports.addToCart = function (req, res) {
                 }, function (error, doc) {
 
                     if (error) {
-                        throw error;
+                        return res.jsonp({
+                            message: "ERROR: on updating the cart "
+                        });
                     } else {
                         Inventory.update({
                             upc: product_upc
@@ -214,7 +225,9 @@ exports.addToCart = function (req, res) {
                         }, function (error, doc) {
 
                             if (error) {
-                                throw error;
+                                return res.jsonp({
+                                    message: "ERROR: on updating the customer "
+                                });
                             } else {
                                 console.log("updated to inventory");
                                 res.jsonp({
@@ -245,7 +258,7 @@ exports.addToCart = function (req, res) {
                     customerId: cust_Id,
                     comments: product_comments,
                     totalPrice: total_Price,
-                    customerName : customer_name,
+                    customerName: customer_name,
                     date: sale_date,
                     state: 0,
                     products: [{
@@ -261,7 +274,9 @@ exports.addToCart = function (req, res) {
                 var temp = new Sales(docs);
                 temp.save(function (err, admin) {
                     if (err) {
-                        return console.error(err);
+                        return res.jsonp({
+                            message: "ERROR: on creating a new cart"
+                        });
                     } else {
                         console.log('message : "The new order has beeen added into the cart');
                     }
@@ -280,7 +295,7 @@ exports.addToCart = function (req, res) {
                     if (error) {
                         throw error;
                     } else {
-                        console.log("updated to inventory");
+                        //console.log("updated to inventory");
                         res.jsonp({
                             message: "The new order has beeen updated into the inventoryDB & inserted to the cart "
                         });
@@ -299,22 +314,22 @@ exports.addToCart = function (req, res) {
 // --Finalizing the opend cart and update the inventory and sale DB.
 // -- input :   sales_PersId,customerIdFE,commentFE, customerLastNameFE,upcFE, nameFE,quantityFE,priceFE
 exports.FinalizeInvoice = function (req, res) {
-    var uid = req.session.uid;
-
-        var sales_PersId = req.body.sales_PersId,
+    var sales_PersId = req.session.uid;
         cust_Id = req.body.customerId,
         product_comments = req.body.comment,
-        total_Price = req.body.customerLastName,
+        total_Price = req.body.totalPrice,
         product_upc = req.body.upc,
         product_name = req.body.name,
         product_quantity = req.body.quantity,
         product_price = req.body.price,
         sale_date = new Date();
-        
 
 
-    if (uid === undefined)
-    return res.redirect("/login");
+
+    if (sales_PersId === undefined)
+        return res.jsonp({
+            message: "Authentication failed"
+        });
 
     Sales.findOne({
             salesPersonId: sales_PersId,
@@ -324,7 +339,9 @@ exports.FinalizeInvoice = function (req, res) {
         function (err, doc) {
             if (err) {
 
-                throw err;
+                return res.jsonp({
+                    message: "ERROR: on updating the customer "
+                });
             }
 
 
@@ -345,7 +362,9 @@ exports.FinalizeInvoice = function (req, res) {
                     , function (err, doc) {
                         if (err) {
 
-                            throw err;
+                            return res.jsonp({
+                                message: "ERROR: on updating the customer "
+                            });
                         }
                         console.log("update the salesDB State = 1");
                     });
@@ -356,26 +375,25 @@ exports.FinalizeInvoice = function (req, res) {
                     console.dir(result);
 
                     var decrease = -1 * result.quantity;
-                    
+
                     Inventory.update({
                         upc: result.upc
                     }, {
                         $inc: {
-                            onHandQu: decrease,
+                            quantity: decrease,
                             soldQu: result.quantity,
                             onHoldQu: decrease
                         }
                     }, function (err) {
                         if (err) {
-                            throw err;
+                            return res.jsonp({
+                                message: "ERROR: on updating the customer "
+                            });
                         } else {
                             console.log("update the InventoryDB ");
                         }
 
                     })
-
-                    console.log("inventory fuck");
-
 
                 });
 
@@ -384,13 +402,19 @@ exports.FinalizeInvoice = function (req, res) {
                 //-----------------------------------------------
             }
         })
+    res.jsonp({
+        message: "ERROR: on updating the customer "
+    });
 };
 
 exports.showAllPendingCart = function (req, res) {
+    console.log("jhasbdjhdsfbjhsdfjhsdfjhsdjhfbjsdhfbjshdfbjshd");
     var sales_PersId = req.session.uid;
     //cust_Id = req.body.customerId;
-    if (sales_PersId === undefined)
+    if (sales_PersId === undefined) {
+        //console.log("jhasbdjhdsfbjhsdfjhsdfjhsdjhfbjsdhfbjshdfbjshd");
         return res.redirect("/login");
+    }
 
     Sales.find({
             salesPersonId: sales_PersId,
@@ -399,22 +423,25 @@ exports.showAllPendingCart = function (req, res) {
         function (err, doc) {
             if (err) {
 
-                res.jsonp({message : "500 ,ServerError"});
+                res.jsonp({
+                    message: "500 ,ServerError"
+                });
             }
 
             if (doc) {
                 res.jsonp(doc);
-            } 
-            else {
-                res.jsonp({message : " No open Cart found"});
+            } else {
+                res.jsonp({
+                    message: " No open Cart found"
+                });
             }
         });
 };
 
 
 exports.editOrder = function (req, res) {
-    console.log("in edit");
-    var sales_PersId = req.session.uid,      
+    //console.log("in edit");
+    var sales_PersId = req.session.uid,
         cust_Id = req.body.customerId,
         product_comments = req.body.comment,
         total_Price = req.body.totalPrice,
@@ -426,7 +453,7 @@ exports.editOrder = function (req, res) {
         sale_date = new Date();
 
 
-Sales.findOne({
+    Sales.findOne({
             salesPersonId: sales_PersId,
             customerId: cust_Id,
             state: 0
@@ -443,12 +470,13 @@ Sales.findOne({
                 Sales.update({
                     salesPersonId: sales_PersId,
                     customerId: cust_Id,
-                    state: 0, "products.upc": product_upc
+                    state: 0,
+                    "products.upc": product_upc
                 }, {
                     $inc: {
                         "products.$.quantity": product_quantity
-                    }}
-                , function (error, doc) {
+                    }
+                }, function (error, doc) {
 
                     if (error) {
                         console.log("in update Error");
@@ -456,7 +484,7 @@ Sales.findOne({
                     } else {
                         console.log("oooooooooook");
 
-                       inventoryUpdate(req,res);
+                        inventoryUpdate(req, res);
                     }
 
 
@@ -466,20 +494,22 @@ Sales.findOne({
 
             } else {
 
-                res.jsonp ({ message : 'This item can not be find in the cart'});
+                res.jsonp({
+                    message: 'could not find the item in the cart'
+                });
 
 
             }
 
         })
 
-};  
+};
 
 // if closeOrder flag is '1' close the cart (last item deleted) otherwise 
 // just remove the item form the cart
 exports.deleteItem = function (req, res) {
-   
-    var sales_PersId = req.session.uid,      
+
+    var sales_PersId = req.session.uid,
         cust_Id = req.body.customerId,
         product_comments = req.body.comment,
         total_Price = req.body.totalPrice,
@@ -488,57 +518,68 @@ exports.deleteItem = function (req, res) {
         product_quantity = req.body.quantity,
         product_price = req.body.price,
         customer_Name = req.body.customerName,
-        last_itemOnCart = req.body.closeOrder, 
+        last_itemOnCart = req.body.closeOrder,
         sale_date = new Date();
 
 
-         console.log("sssssss"+last_itemOnCart);
+    console.log("sssssss" + last_itemOnCart);
     if (sales_PersId === undefined)
         return res.redirect("/login");
-        
-    if(last_itemOnCart==='1'){
-        console.log("sssssss"+last_itemOnCart);
 
-   
+    if (last_itemOnCart === '1') {
+        console.log("sssssss" + last_itemOnCart);
 
-           Sales.update({
-             salesPersonId: sales_PersId,
+
+
+        Sales.update({
+            salesPersonId: sales_PersId,
             customerId: cust_Id,
-            state: 0 },{ state:1 },function (err, doc) {
+            state: 0
+        }, {
+            state: 1
+        }, function (err, doc) {
             if (err) {
 
                 throw err;
+            } else {
+                req.body.quantity = -1 * req.body.quantity;
+                inventoryUpdate(req, res);
+                res.jsonp({
+                    message: "The last item in the cart was removed and cart was closed"
+                });
             }
-            else{
-                req.body.quantity =-1* req.body.quantity;
-                inventoryUpdate(req,res);
-                res.jsonp({message : "The last item in the cart was removed and cart was closed"});
-            } 
 
-           
-    });
+
+        });
 
 
 
-    }
-    else {
+    } else {
         console.log("elseeeeeee");
-            Sales.update(
-                    { salesPersonId: sales_PersId,
-            customerId: cust_Id,
-            state: 0},{$pull:{ products:{'upc': product_upc}} },
+        Sales.update({
+                salesPersonId: sales_PersId,
+                customerId: cust_Id,
+                state: 0
+            }, {
+                $pull: {
+                    products: {
+                        'upc': product_upc
+                    }
+                }
+            },
 
-        function (err, doc) {
-            if (err) {
+            function (err, doc) {
+                if (err) {
 
-                throw err;
-            }
-            else {
-                 req.body.quantity =-1* req.body.quantity;
-                inventoryUpdate(req,res);
-                res.jsonp({message : "The item was removed from the cart"})
-        }  
-          });
+                    throw err;
+                } else {
+                    req.body.quantity = -1 * req.body.quantity;
+                    inventoryUpdate(req, res);
+                    res.jsonp({
+                        message: "The item was removed from the cart"
+                    })
+                }
+            });
     }
 
 };
@@ -549,7 +590,7 @@ exports.reportInventory = function (req, res) {
     var uid = req.session.uid;
     if (uid === undefined)
         return res.redirect("/login");
-    var user_creteria = req.body.creteriaFE;
+    var user_creteria = req.body.creteria;
     //var 
     Inventory.find({
         name: new RegExp(user_creteria, 'i')
@@ -558,8 +599,8 @@ exports.reportInventory = function (req, res) {
     })
 };
 
-function inventoryUpdate (req,res){
-    var sales_PersId = req.session.uid,      
+function inventoryUpdate(req, res) {
+    var sales_PersId = req.session.uid,
         cust_Id = req.body.customerId,
         product_comments = req.body.comment,
         total_Price = req.body.totalPrice,
@@ -570,22 +611,22 @@ function inventoryUpdate (req,res){
         customer_Name = req.body.customerName;
 
     Inventory.update({
-                            upc: product_upc
-                        }, {
-                            $inc: {
-                                onHoldQu: product_quantity
-                            }
-                        }, function (error, doc) {
+        upc: product_upc
+    }, {
+        $inc: {
+            onHoldQu: product_quantity
+        }
+    }, function (error, doc) {
 
-                            if (error) {
-                                throw error;
-                            } else {
-                                console.log("updated to inventory");
-                                return ;
-                            }
+        if (error) {
+            throw error;
+        } else {
+            console.log("updated to inventory");
+            return;
+        }
 
 
-                        });
+    });
 }
 
 
@@ -593,21 +634,28 @@ exports.getCustmoerInfoById = function (req, res) {
     var uid = req.session.uid,
         user_id = req.body.customerId;
     if (uid === undefined)
-        return res.redirect("/login");
-    
-    console.log (user_id);
-    Customer.findOne({ _id : user_id}, function (err, docs) {
-        if (err){
-            res.jsonp({message : err});
+        return res.jsonp({
+            message: "Authentication failed"
+        });
+
+    console.log(user_id);
+    Customer.findOne({
+        _id: user_id
+    }, function (err, docs) {
+        if (err) {
+            res.jsonp({
+                message: "ERROR: on finding the user"
+            });
         }
         if (docs) {
             res.jsonp(docs);
-        }
-        else{
+        } else {
             console.dir(docs);
-            res.jsonp({message:" The customer was not found by this id" });
+            res.jsonp({
+                message: " The customer was not found by this id"
+            });
         }
-        
+
     });
 };
 // exports.seachProduct = function (req, res) {

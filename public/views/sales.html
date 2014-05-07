@@ -45,7 +45,7 @@
 
   <div class="row row-centered" style="margin-top:20px" ng-if="showCustomerDetails">
     <div class="col-md-10">
-      <form editable-form name="editableForm" onaftersave="saveUser()">
+      <form editable-form name="editableForm" onaftersave="saveCustomer()">
         <table class="table">
           <tr>
             <td>
@@ -53,7 +53,7 @@
               <span class="title">Customer Name: </span>
             </td>
             <td>
-              <span editable-text="customer.firstName + ' ' + customer.lastName" e-name="name" onbeforesave="checkName($data)" e-required>{{ customer.firstName + ' ' + customer.lastName || 'empty' }}</span>
+              <span editable-text="customer.firstName + ' ' + customer.lastName" e-name="name"  e-required>{{ customer.firstName + ' ' + customer.lastName || 'empty' }}</span>
             </td>
           </tr>
           <tr> 
@@ -62,7 +62,7 @@
               <span class="title">Email Address: </span>
             </td>
             <td>
-              <span editable-text="customer.name" e-name="email" onbeforesave="checkName($data)" e-required>{{customer.email  || 'empty' }}</span>
+              <span editable-text="customer.name" e-name="email"  e-required>{{customer.email  || 'empty' }}</span>
             </td>
           </tr>
           <tr>
@@ -71,7 +71,8 @@
               <span class="title">Phone Number </span>
             </td>
             <td>
-              <span editable-text="customer.phoneNumber" e-name="phoneNumber" onbeforesave="checkName($data)" e-required>{{ customer.phoneNumber || 'empty' }}</span>
+              <span editable-text="customer.phoneNumber" e-name="phoneNumber" e-required>
+              {{ customer.phoneNumber || 'empty' }}</span>
             </td> 
           </tr>
           <tr>
@@ -80,7 +81,7 @@
               <span class="title">Address: </span>
             </td>
             <td>
-              <span editable-text="customer.address" e-name="address" onbeforesave="checkName($data)" e-required>{{ customer.address || 'empty' }}</span>
+              <span editable-text="customer.address" e-name="address" e-required>{{ customer.address || 'empty' }}</span>
             </td> 
           </tr>
         </table>
@@ -195,8 +196,8 @@
               <td>{{product.upc}}</td>
               <td>{{product.name}}</td>
               <td>
-                <a href="#" editable-text="product.onHandQu">
-                {{product.onHandQu || 'empty'}}
+                <a href="#" editable-text="product.quantity">
+                {{product.quantity || 'empty'}}
                 </a>
                 <!-- <span class="glyphicon glyphicon-plus-sign"></span>
                 <span class="glyphicon glyphicon-minus-sign"></span> -->
@@ -212,6 +213,7 @@
               </td>
               
             </tr>
+            
           </tbody>
         </table>
       </div>
@@ -288,68 +290,13 @@
     </div>
 
 
-<!-- Edit Customer -->
-    <div class="content" ng-if="showEditCustomer">
-      <form class="form-horizontal">
-        <fieldset>
 
-        <!-- Form Name -->
-        <legend>Edit Customer</legend>
-
-        <!-- Text input-->
-        <div class="form-group">
-          <label class="col-md-4 control-label" for="first">First Name:</label>  
-          <div class="col-md-4">
-          <input ng-model="editCustomer.irst" type="text" placeholder="First Name" class="form-control input-md" required="">
-            
-          </div>
-        </div>
-
-        <!-- Text input-->
-        <div class="form-group">
-          <label class="col-md-4 control-label" for="last">Last Name</label>  
-          <div class="col-md-4">
-          <input ng-model="editCustomer.last" type="text" placeholder="Last Name" class="form-control input-md" required="">
-            
-          </div>
-        </div>
-
-        <!-- Text input-->
-        <div class="form-group">
-          <label class="col-md-4 control-label" for="phone">Phone Number</label>  
-          <div class="col-md-4">
-          <input  ng-model="editCustomer.phone" type="text" placeholder="Phone Number" class="form-control input-md" required="">
-            
-          </div>
-        </div>
-
-        <!-- Text input-->
-        <div class="form-group">
-          <label class="col-md-4 control-label" for="email">Email</label>  
-          <div class="col-md-4">
-          <input  ng-model="editCustomer.email" type="text" placeholder="Email" class="form-control input-md" required="">
-            
-          </div>
-        </div>
-
-        <!-- Textarea -->
-        <div class="form-group">
-          <label class="col-md-4 control-label" for="address">Address</label>
-          <div class="col-md-4">                     
-            <textarea class="form-control" ng-model="editCustomer.address"></textarea>
-          </div>
-        </div>
-
-        </fieldset>
-      </form>
-
-    </div>
 
 
     </div>
   </div>
 
-
+<!-- SHOW ORDER-->
   <div class="row" ng-if="showOrder">
     <div class="col-md-2"></div>
     <div class="col-md-8">
@@ -357,38 +304,33 @@
       <table class="table table-bordered table-hover table-condensed">
         <thead>
           <tr>
-            <th style="width:40%">UPC</th>
+            <th style="width:30%">UPC</th>
             <th style="width:15%">Name</th>
             <th style="width:15%">Quantity</th>
-            <th style="width:15%">Price</th>
+            <th style="width:15%">Unit Price</th>
+            <th style="width:15%">Total Price</th>
             <th style="width:15%">Edit</th>
           </tr>
         </thead>
         <tbody>
           <tr ng-repeat="item in orders">
             <td>
-              <!-- editable username (text with validation) -->
-              <span editable-text="item.upc" e-name="upc" e-form="rowform" onbeforesave="checkUpc($data, user.id)" e-required>
-                {{ item.upc || 'empty' }}
-              </span>
+                {{ item.upc  }}
             </td>
             <td>
-              <!-- editable username (text with validation) -->
-              <span editable-text="item.name" e-name="name" e-form="rowform" onbeforesave="checkName($data, user.id)" e-required>
-                {{ item.name || 'empty' }}
-              </span>
+                {{ item.name  }}
             </td>
             <td>
-              <!-- editable username (text with validation) -->
-              <span editable-text="item.onHandQu" e-name="onHandQu" e-form="rowform" onbeforesave="checkQuantity($data, user.id)" type="number" e-required>
-                {{ item.onHandQu || item.quantity }}
+              <span editable-text="item.quantity" e-name="quantity" e-form="rowform" onbeforesave="checkPrice($data, user.id)" e-required>
+                {{ item.quantity  }}
               </span>
+              
             </td>
             <td>
-              <!-- editable username (text with validation) -->
-              <span editable-text="item.price" e-name="price" e-form="rowform" onbeforesave="checkPrice($data, user.id)" e-required>
-                {{ item.price || 'empty' }}
-              </span>
+                {{ item.price  }}
+            </td>
+            <td>
+                {{ item.price * item.quantity }}
             </td>
             <td style="white-space: nowrap">
               <!-- form -->
@@ -406,66 +348,16 @@
               </div>  
             </td>
             
-            <!-- <td>
-              <span editable-text="item.upc" 
-                    e-name="name" 
-                    e-form="rowform" 
-                    onbeforesave="checkName($data, user.id)" 
-                    e-required > 
-                {{ item.upc || 'empty' }}
-              </span>
-            </td>
-            <td>
-              <span editable-text="item.name" 
-                    e-name="name" 
-                    e-form="rowform" 
-                    onbeforesave="checkUpc($data, item.name)" 
-                    e-required > 
-                {{ item.name || 'empty' }}
-              </span>
-            </td>
-            <td>
-              <span editable-text="item.name" 
-                    e-name="name" 
-                    e-form="rowform" 
-                    onbeforesave="checkUpc($data, item.name)" 
-                    e-required > 
-                {{ item.quantity || 'empty' }}
-              </span>
-            </td>
-            <td>
-              <span editable-text="item.quantity" 
-                    e-name="name" 
-                    e-form="rowform" 
-                    onbeforesave="checkUpc($data, item.quantity)" 
-                    e-required > 
-                {{ item.price || 'empty' }}
-              </span>
-            </td>
-            <td>
-              <form editable-form name="rowform" 
-                    onbeforesave="saveUser($data, user.id)" 
-                    ng-show="rowform.$visible" 
-                    class="form-buttons form-inline" 
-                    shown="inserted == user" >
-                <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
-                  save
-                </button>
-                <button type="button" 
-                        ng-disabled="rowform.$waiting" 
-                        ng-click="rowform.$cancel()" 
-                        class="btn btn-default" >
-                  cancel
-                </button>
-              </form>
-              <span editable-text="item.quantity" 
-                    e-name="name" 
-                    e-form="rowform" 
-                    onbeforesave="checkUpc($data, item.quantity)" 
-                    e-required > 
-                {{ item.quantity || 'empty' }}
-              </span>
-            </td> -->
+            <tr>
+              <td>
+                <span>Grand Total:</span>
+                <span>{{grandTotal}}</span>
+              </td>
+              <td rowspan="3">
+                <button class="btn btn-success" ng-click="finalize()">Finalize</button>
+              </td>
+            </tr>
+            
 
           </tr>
         </tbody>

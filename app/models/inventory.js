@@ -4,7 +4,7 @@ var inventory = new Schema({
     upc: Number,
     name: String,
     picture: String,
-    onHandQu: Number,
+    quantity: Number,
     onHoldQu: Number,
     soldQu: Number,
     price: Number,
@@ -13,7 +13,7 @@ var inventory = new Schema({
         date: Date,
         quantity: Number
     }]
-});
+}); 
 
 var inventory = mongoose.model('inventory', inventory);
 

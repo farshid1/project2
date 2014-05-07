@@ -65,32 +65,33 @@ user.findOne({
 io.sockets.on('connection', function (socket) {
     //console.log('connected*******************');
 
-
     socket.on('log in', function (data) {
         socket.role = data.role;
         socket.userId = data._id;
         users.push (socket);
         console.log("in the log in");
-        console.log(data);
         console.log(users.length);
-        _.each (users, function(user){
-    		if(user.role == 1){
-    			console.log("user found");
-    			user.emit('news', {userid: user.userId});
-    		}
-    	})
     });
 
-    socket.on('test', function (data){
+    socket.on('notification', function (data) {
+    	console.log("notification received");
+    	console.log(users.length);
     	_.each (users, function(user){
-    			console.log("Found the user");
+    		if(user.role == data.notifyRole || user.role == 1){
+    			console.log("user found");
+    			user.emit('notification', data);
+    		}
     	})
-    });
+    })
+
 
     socket.on('disconnect', function (data) {
         if (!socket.userId) return;
-        console.log("in disconnect" + users.length);
-        delete users[indexOf(socket)];
+        console.log("in disconnect" + socket);
+
+		//users = _.(users).reject(function(el) { return el.userId === socket.userId; });
+
+        //delete users[indexOf(socket)];
         console.log("after disconnect" + users.length);
 
 

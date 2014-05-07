@@ -32,7 +32,7 @@
               <td>{{product.name}}</td>
               <td>{{product.name}}</td>
               <td>
-                {{product.onHandQu}}
+                {{product.quantity}}
                 <span 
                   class="glyphicon glyphicon-plus-sign" 
                   ng-click="increment(product)">
@@ -107,7 +107,7 @@
           <div class="form-group">
             <label class="col-md-4 control-label" for="addproduct"></label>
             <div class="col-md-4">
-              <button id="addproduct" name="addproduct" class="btn btn-primary">Add Product</button>
+              <button id="addproduct" name="addproduct" class="btn btn-primary" ng-click="addItem(newItem)">Add Product</button>
             </div>
           </div>
 

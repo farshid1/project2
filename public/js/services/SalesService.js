@@ -7,7 +7,6 @@ angular.module('SalesService', [])
 
 	return { 
 		getProducts: function(formData) {
-			console.log(formData);
 			return $http({
 				url: '/api/inventory/searchItem',
 				data: {creteria: formData},
@@ -41,6 +40,14 @@ angular.module('SalesService', [])
 			 	header: {'Content-Type':'application/json'}
 			});
 		},
+		editCustomer: function(customer) {
+			return $http({
+				url: '/api/sales/editCustomer',
+				data: customer,
+			 	method: 'POST',
+			 	header: {'Content-Type':'application/json'}
+			});
+		},
 		getPendingOrders: function() {
 			return $http({
 				url: '/api/sales/showAllPendingCart',
@@ -67,6 +74,14 @@ angular.module('SalesService', [])
 		deleteOrder: function(item) {
 			return $http({
 				url: '/api/sales/deleteItem',
+				data: item,
+			 	method: 'POST',
+			 	header: {'Content-Type':'application/json'}
+			});
+		},
+		finalizeOrder: function(item) {
+			return $http({
+				url: '/api/sales/FinalizeInvoice',
 				data: item,
 			 	method: 'POST',
 			 	header: {'Content-Type':'application/json'}

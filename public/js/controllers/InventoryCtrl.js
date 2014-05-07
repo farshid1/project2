@@ -11,12 +11,12 @@ angular.module('InventoryCtrl', ['InventoryService'])
 
   $scope.increment = function(product) {
       console.log("Inc");
-      product.onHandQu++;
+      product.quantity++;
       //$scope.value++;
   }
   $scope.decrement = function(product) {
       console.log("Dec");
-      product.onHandQu--;
+      product.quantity--;
   }
 
   mySocket.emit('my other event', { my: 'data' });
@@ -61,7 +61,7 @@ angular.module('InventoryCtrl', ['InventoryService'])
     console.log(item);
     $scope.editItem.upc = item.upc;
     $scope.editItem.name = item.name;
-    $scope.editItem.quantity = item.onHandQu;
+    $scope.editItem.quantity = item.quantity;
     $scope.editItem.price = item.price;
    // $scope.editItem.price = item.price;
 

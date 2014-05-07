@@ -5,28 +5,23 @@ window.routes =
 	},
     "/login": {
         templateUrl: 'views/login.html',
-		controller: 'UserController',
-        requireLogin: false
+		controller: 'UserController'
     },
     "/logout": {
         templateUrl: 'views/login.html',
-        controller: 'UserController',
-        requireLogin: false
+        controller: 'UserController'
     },
     "/sales": {
         templateUrl: 'views/sales.html',
-		controller: 'SalesController', 
-        requireLogin: false
+		controller: 'SalesController'
 	},
     "/inventory": {
         templateUrl: 'views/inventory.html',
-		controller: 'InventoryController',
-        requireLogin: false
+		controller: 'InventoryController'
     },
     "/admin": {
         templateUrl: 'views/admin.html',
-		controller: 'AdminController',
-        requireLogin: false
+		controller: 'AdminController'
     }
 };
 
