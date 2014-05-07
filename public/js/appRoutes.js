@@ -28,7 +28,7 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
     for(var path in window.routes) {
         $routeProvider.when(path, window.routes[path]);
     }
-    $routeProvider.otherwise({redirectTo: '/login'});
+    //$routeProvider.otherwise({redirectTo: '/login'});
 
 	$locationProvider.html5Mode(true);
 

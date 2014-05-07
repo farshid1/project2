@@ -1,9 +1,7 @@
 window.routes =
 {
     "/": {
-        templateUrl: 'views/login.html',
-		controller: 'UserController', 
-        requireLogin: false
+        redirectTo: '/login'
 	},
     "/login": {
         templateUrl: 'views/login.html',

@@ -40,6 +40,13 @@ angular.module('SalesService', [])
 			 	header: {'Content-Type':'application/json'}
 			});
 		},
+		getPendingOrders: function() {
+			return $http({
+				url: '/api/sales/showAllPendingCart',
+			 	method: 'GET',
+			 	header: {'Content-Type':'application/json'}
+			});
+		},
 		addToOrder: function(item) {
 			return $http({
 				url: '/api/sales/addToCart',

@@ -60,16 +60,34 @@ else {
 };
 
 
+function findUser(userId){
+   User.findOne({_id: userId},{_id:1, role:1,firstName:1,lastName:1}, 
+    function(err, doc) {
+      if (err) {
+        console.error(err);
+      }
+      if (doc) {
+        console.log("USER: '" + userId + "' successfully was sent back");
+        return doc;
+      }
+      else {
+        console.log("USER: '" + userId + "'" + " invalid credentials");
+        return ({message: "something bad happend!!"});
+        //res.redirect('/login');
+      }
+  });
+}
+
 //- Attempt to log user in and create session cookie
 exports.login = function(req, res) {
-    var user = req.body.username,
-    pass = req.body.password;
-    console.log(user);
 
   if (req.session.uid) {
-    res.jsonp('/dasboard');
+    console.log(req.session.uidOb);
+    var user = findUser(req.session.uid)
+    return res.jsonp({email: req.session.uid, role: req.session.urole});
   }
-
+    var user = req.body.username,
+    pass = req.body.password;
 
   User.findOne({email: user, password: pass},{_id:1, role:1,firstName:1,lastName:1}, 
     function(err, doc) {
@@ -81,6 +99,7 @@ exports.login = function(req, res) {
         console.dir(doc);
         console.log ("uid is : "+doc._id);
         req.session.uid = parseInt( "0x"+doc._id);
+        req.session.uidOb = doc._id;
         req.session.urole = doc.role;
         console.log(req.session.urole);
         console.log("USER: '" + user + "'" + " valid credentials");
@@ -88,7 +107,7 @@ exports.login = function(req, res) {
       }
       else {
         console.log("USER: '" + user + "'" + " invalid credentials");
-        res.jsonp("couldn't find");
+        res.jsonp({message: "couldn't find"});
         //res.redirect('/login');
       }
 });
@@ -104,7 +123,7 @@ exports.update = function(req,res){
    phone = req.body.phoneNumber;
 
   if (!uid)
-    return res.redirect("/login");
+    return res.jsonp("/login");
 
   //  var collection = db.collection('users');
   User.findOne({username: user}, function(err, doc) {
@@ -140,7 +159,7 @@ exports.isAuthenticated = function(req, res, next){
   //user is trying to access protected page
   if (!req.session.uid) {
    
-    res.redirect("/login");
+    res.jsonp("/login");
   }
   //authenticated user, proceed
   else {

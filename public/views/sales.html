@@ -1,4 +1,4 @@
-<div class="container-fluid well">
+<div class="container-fluid well" ng-init="init()">
 
 <!--<div class="row">
    <table class="table table-striped" ng-show="showResult">
@@ -62,8 +62,103 @@
   </div>
 
 
+
+
+
+
+
+
+
+<!--Customer content--> 
+
+
+
+  <div class="row row-centered" ng-if="showCustomerDetails">
+    <div class="col-md-10">
+      <form editable-form name="editableForm" onaftersave="saveUser()">
+        <table class="table">
+          <tr>
+            <td>
+              <!-- editable username (text with validation) -->
+              <span class="title">Customer Name: </span>
+            </td>
+            <td>
+              <span editable-text="customer.firstName + ' ' + customer.lastName" e-name="name" onbeforesave="checkName($data)" e-required>{{ customer.firstName + ' ' + customer.lastName || 'empty' }}</span>
+            </td>
+          </tr>
+          <tr> 
+            <td>
+              <!-- editable username (text with validation) -->
+              <span class="title">Email Address: </span>
+            </td>
+            <td>
+              <span editable-text="customer.name" e-name="email" onbeforesave="checkName($data)" e-required>{{customer.email  || 'empty' }}</span>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <!-- editable username (text with validation) -->
+              <span class="title">Phone Number </span>
+            </td>
+            <td>
+              <span editable-text="customer.phoneNumber" e-name="phoneNumber" onbeforesave="checkName($data)" e-required>{{ customer.phoneNumber || 'empty' }}</span>
+            </td> 
+          </tr>
+          <tr>
+            <td>
+              <!-- editable username (text with validation) -->
+              <span class="title">Address: </span>
+            </td>
+            <td>
+              <span editable-text="customer.address" e-name="address" onbeforesave="checkName($data)" e-required>{{ customer.address || 'empty' }}</span>
+            </td> 
+          </tr>
+        </table>
+
+        
+
+        <div class="buttons">
+          <!-- button to show form -->
+          <button type="button" class="btn btn-default" ng-click="editableForm.$show()" ng-show="!editableForm.$visible">
+            Edit
+          </button>
+          <!-- buttons to submit / cancel form -->
+          <span ng-show="editableForm.$visible">
+            <button type="submit" class="btn btn-primary" ng-disabled="editableForm.$waiting">
+              Save
+            </button>
+            <button type="button" class="btn btn-default" ng-disabled="editableForm.$waiting" ng-click="editableForm.$cancel()">
+              Cancel
+            </button>
+          </span>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+
+
+<!--Pending Orders content--> 
+
+
+  <div class="row row-centered" >
+    <div class="col-md-9">
+        <table class="table">
+          <tr ng-repeat="order in pendingOrders">
+            <td>{{order.customerName}}</td>
+            <td>{{order.totalPrice}}</td>
+            <td>
+              <button type="button" class="btn btn-default" ng-click="showPendingOrder()">
+                Continue
+              </button>
+            </td>
+          </tr>
+        </table>
+    </div>
+  </div>
     
-      <!--Sidebar content-->
+        
       
       <!-- <div  ng-if="showSearchCustomer"> -->
         
@@ -398,4 +493,9 @@
     <div class="col-md-2"></div>
     
   </div>
+
+  <div class="row" id="notifications">
+    
+  </div>
+
 </div>
