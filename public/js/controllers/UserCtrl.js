@@ -1,4 +1,4 @@
-angular.module('UserCtrl', ['UserService', 'mySocket']).controller('UserController', 
+angular.module('UserCtrl', []).controller('UserController', 
     function ($scope, $rootScope, $location, UserService, mySocket) {
 
         // console.log('what up');
@@ -7,10 +7,6 @@ angular.module('UserCtrl', ['UserService', 'mySocket']).controller('UserControll
         //     console.log(data);
         //     mySocket.emit('my other event', { my: 'data' });
         //   });
-
-        $rootScope.isLoggedin = false;
-        //$rootScope.user = {};
-
         $scope.init = function() {
             UserService.postData({})
             .then(
@@ -20,7 +16,7 @@ angular.module('UserCtrl', ['UserService', 'mySocket']).controller('UserControll
                     }
                     else {
                         mySocket.emit('log in', response.data);
-                        $rootScope.user = angular.copy(response.data);
+                        $scope.currentUser = angular.copy(response.data);
                         $rootScope.isLoggedin = true;
                         switch($rootScope.user.role) {
                             case 1:
@@ -42,67 +38,33 @@ angular.module('UserCtrl', ['UserService', 'mySocket']).controller('UserControll
 
                 }
             );
-            // console.log($rootScope.user);
-            // if ($rootScope.user) {
-            //     //console.log($rootScope.isLoggedin);
-            //     switch($rootScope.user.role) {
-            //         case 1:
-            //             $location.path('/admin');
-            //             break;
-            //         case 2:
-            //             $location.path('/sales');
-            //             break;
-            //         case 3:
-            //             $location.path('/inventory');
-            //             break;
-            //         default:
-            //             $location.path('/login');
-            //             break;
-            //     }
-            // };
         };
         
-        $scope.submit = function(formData) {
-            $scope.master = angular.copy(formData);
+        $scope.submit = function(loginData) {
 
-            UserService.postData($scope.master)
+            UserService.postData(loginData)
             .then (
                 function(r) {
-                console.log(r.data.role);
-                console.log(r.data.role);
-                mySocket.emit('log in', r.data);
-                console.log("emitted");
-                $rootScope.user = angular.copy(r.data);
-                $rootScope.isLoggedin = true;
-                switch($rootScope.user.role) {
-                    case 1:
-                        //$location.replace('/inventory');
-                        // $scope.$apply(function() {
-                        //     $location.path("/admin");
-                        //     console.log($location.path());
-                        //   });
-                        // console.log("hey admin");
-                        $location.path('/admin');
-                        break;
-                    case 2:
-                        $location.path('/sales');
-                        break;
-                    case 3:
-                        $location.path('/inventory');
+                    mySocket.emit('log in', r.data);
+                    //console.log("emitted");
+                    $rootScope.currentUser = angular.copy(r.data);
+                    $rootScope.isLoggedin = true;
+                    switch($rootScope.currentUser.role) {
+                        case 1:
+                            $location.path('/admin');
+                            break;
+                        case 2:
+                            $location.path('/sales');
+                            break;
+                        case 3:
+                            $location.path('/inventory');
+                    }
+                },
+                function () {
+                    alert('failed')
                 }
-               
-                
-                
-                //$scope.restaurants = angular.copy(r.data);
-                //alert('data loaded');
-            },
-            function () {
-                alert('failed')
-            }
-            )
+            );
         }
-
-
 
     }
 );

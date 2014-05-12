@@ -160,7 +160,7 @@ exports.editItem = function (req, res) {
                 message: "ERROR: on updating the customer "
             });
         } else {
-            res.redirect('/dashboard');
+            res.jsonp({message: 'Item successfully edited'});
         }
     });
 };

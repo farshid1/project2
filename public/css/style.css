@@ -14,3 +14,18 @@ body { padding-top:30px; }
 /* text-align:right; */
 text-align:left;
 }
+.added_inventory{
+	color: blue;
+}
+.inventory_sold{
+	color: red;
+}
+.animate-enter {
+	-webkit-transition: 1s linear all; /* Chrome */
+	transition: 1s linear all;
+	opacity: 0;
+}
+ 
+.animate-enter.animate-enter-active {
+	opacity: 1;
+}

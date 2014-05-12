@@ -85,7 +85,7 @@ io.sockets.on('connection', function (socket) {
     			user.emit('notification', data);
     		}
     	})
-    })
+    });
 
 
     socket.on('disconnect', function (data) {

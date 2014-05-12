@@ -1,19 +1,23 @@
-<div class="container-fluid" ng-init="init()">
-<div class="row" style="text-align:right">
+<div class="page-header">
+   <h1>Welcome, 
+      <small style="color:#d9534f;">{{user.firstName +' '+ user.lastName}}</small>
+   </h1>
+   <div class="row" style="text-align:right">
   <a href="#" ng-click="logOut()" class="btn btn-default btn-danger btn-lg"><span class="glyphicon glyphicon-log-out"></span> Log Out</a>
 </div>
-  <div class="row">
-    <div class="col-md-2">
-      <!--Sidebar content-->
-      <!-- Search: <input ng-model="result" type="text" typeahead="suggestion for suggestion in products($viewValue)"> -->
+</div>
 
-      
-      <button class="btn btn-default" ng-click="showAddForm()">
-        <span class="glyphicon glyphicon-plus" ></span>Add Item
-      </button>
+<div class="container-fluid well" ng-init="init()">
 
-    </div>
-    <div class="col-md-10">
+
+<div class="alert alert-success"
+      style="margin-top:20px" 
+      ng-if="itemEdited" 
+      ng-animate="{enter: 'animate-enter', leave: 'animate-leave'}">Order has been finalized</div>
+
+  <div class="row" style="margin-top:40px;">
+    
+    <div class="col-md-6">
       <!--Body content-->
       <div class="left-inner-addon">
         <i class="glyphicon glyphicon-search"></i>
@@ -53,7 +57,7 @@
                       e-name="quantity" 
                       e-form="rowform"
                       e-required
-                      onbeforesave="checkQuantity($data, product.quantity)">
+                      >
                 {{product.quantity}}
                 </span>
               </td>
@@ -93,11 +97,17 @@
       </table>
 
     </div>
+    <div class="col-md-2">
+      <button class="btn btn-default" ng-click="showAddForm()">
+        <span class="glyphicon glyphicon-plus" ></span>Add Item
+      </button>
+
+    </div>
   </div>
 
 
  
-  <div class="row">
+  <div class="row" style="margin-top:40px;">
     <div class="col-md-6">
       <div ng-show="showAddItem">
 
@@ -162,8 +172,15 @@
     </div>
   </div>
   <div class="row" id = "footer">
-    <ul id="notifications">>
-    </ul>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Notifications</h3>
+      </div>
+      <div class="panel-body">
+       <ul id="notifications" class="list-group"></ul>
+      </div>
+    </div>
+    
     
   </div> 
 </div>

@@ -326,10 +326,11 @@ exports.FinalizeInvoice = function (req, res) {
 
 
 
-    if (sales_PersId === undefined)
+    if (sales_PersId === undefined) {
         return res.jsonp({
             message: "Authentication failed"
         });
+    }
 
     Sales.findOne({
             salesPersonId: sales_PersId,
@@ -452,6 +453,7 @@ exports.editOrder = function (req, res) {
         customer_Name = req.body.customerName,
         sale_date = new Date();
 
+        console.log("product quantity: ",product_quantity);
 
     Sales.findOne({
             salesPersonId: sales_PersId,
@@ -473,6 +475,7 @@ exports.editOrder = function (req, res) {
                     state: 0,
                     "products.upc": product_upc
                 }, {
+                    //????????????????
                     $inc: {
                         "products.$.quantity": product_quantity
                     }

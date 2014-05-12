@@ -1,4 +1,4 @@
-angular.module('InventoryCtrl', ['InventoryService', 'UserService'])
+angular.module('InventoryCtrl', [])
 .controller('InventoryController', function ($scope, $http,$location, InventoryService, limitToFilter, mySocket, UserService) {
 
   $scope.inventory = {};
@@ -8,16 +8,14 @@ angular.module('InventoryCtrl', ['InventoryService', 'UserService'])
   $scope.showAddItem = false;
   $scope.showEditItem = false;
   $scope.showResult = false;
-
+  $scope.itemEdited = false;
 
 
 
 
   $scope.checkQuantity = function(data, qty) {
    
-    if(data > qty) {
-      return "You cannot exceed the max quantity";
-    }
+  
     if(data < 0) {
       return "You cannot have negative values for quantity";
     }
@@ -90,7 +88,7 @@ angular.module('InventoryCtrl', ['InventoryService', 'UserService'])
         console.log("in notification:")
         if(data.quantity){
           console.log(data);
-         $("#notifications").append('<li class="'+data.title+'"> The quantity of the product:<b>'+data.productName+'</b> with the upc of: <b>'+data.upc+'</b> is under <b>5</b></li>');
+         $("#notifications").append('<li class="list-group-item'+' '+data.title+'"> The quantity of the product:<b>'+data.productName+'</b> with the upc of: <b>'+data.upc+'</b> is under <b>5</b></li>');
       }}
   });
 
@@ -131,6 +129,7 @@ angular.module('InventoryCtrl', ['InventoryService', 'UserService'])
 
   $scope.showAddForm = function() {
     $scope.showAddItem = true;
+    $scope.showResult = false;
   };
 
   $scope.showEditForm = function(item) {
@@ -213,8 +212,11 @@ $scope.editItem = function(newItem) {
           console.log(r.data);
           console.log("********************");
 
-        //$scope.inventory = angular.copy(r.data);
-        alert('item saved');
+          
+          $scope.itemEdited = true;
+          setTimeout(function(){
+            $scope.itemEdited = false;
+          }, 2000);
         }
         
       },

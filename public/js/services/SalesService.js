@@ -24,10 +24,10 @@ angular.module('SalesService', [])
 				header: {'Content-Type':'application/json'}
 			});
 		},
-		getCustomers: function(formData) {
+		getCustomers: function(customerName) {
 			return $http({
 				url: '/api/sales/searchCustomer',
-			 	data: {customerName: formData},
+			 	data: {customerName: customerName},
 			 	method: 'POST',
 			 	header: {'Content-Type':'application/json'}
 			});

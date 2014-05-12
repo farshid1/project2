@@ -1,8 +1,18 @@
-<div class="row" style="text-align:right">
+<div class="page-header">
+   <h1>Welcome, 
+      <small style="color:#d9534f;">{{user.firstName +' '+ user.lastName}}</small>
+   </h1>
+   <div class="row" style="text-align:right">
   <a href="#" ng-click="logOut()" class="btn btn-default btn-danger btn-lg"><span class="glyphicon glyphicon-log-out"></span> Log Out</a>
 </div>
+</div>
+
 <div class="row" ng-init="init()">
   
+<div class="alert alert-success"
+      style="margin-top:20px" 
+      ng-if="userAdded" 
+      ng-animate="{enter: 'animate-enter', leave: 'animate-leave'}">New user has been added</div>
 <form class="form-horizontal">
 <fieldset>
 
@@ -13,7 +23,7 @@
 <div class="form-group">
   <label class="col-md-4 control-label" for="firstnametextinput">Enter First Name</label>  
   <div class="col-md-4">
-  <input ng-model="user.firstName" type="text" placeholder="First Name" class="form-control input-md">
+  <input ng-model="currentUser.firstName" type="text" placeholder="First Name" class="form-control input-md">
     
   </div>
 </div>
@@ -22,7 +32,7 @@
 <div class="form-group">
   <label class="col-md-4 control-label" for="lastnametextinput">Enter Last Name</label>  
   <div class="col-md-4">
-  <input ng-model="user.lastName" type="text" placeholder="Last Name" class="form-control input-md">
+  <input ng-model="currentUser.lastName" type="text" placeholder="Last Name" class="form-control input-md">
     
   </div>
 </div>
@@ -31,7 +41,7 @@
 <div class="form-group">
   <label class="col-md-4 control-label" for="phonetextinput">Enter Phone Number</label>  
   <div class="col-md-4">
-  <input ng-model="user.phoneNumber" type="text" placeholder="Phone Number" class="form-control input-md">
+  <input ng-model="currentUser.phoneNumber" type="text" placeholder="Phone Number" class="form-control input-md">
     
   </div>
 </div>
@@ -40,7 +50,7 @@
 <div class="form-group">
   <label class="col-md-4 control-label" for="emailtextinput">Enter Email Address</label>  
   <div class="col-md-4">
-  <input ng-model="user.username" type="text" placeholder="Email Address" class="form-control input-md">
+  <input ng-model="currentUser.username" type="text" placeholder="Email Address" class="form-control input-md">
     
   </div>
 </div>
@@ -49,7 +59,7 @@
 <div class="form-group">
   <label class="col-md-4 control-label" for="repasswordinput">Password Input</label>
   <div class="col-md-4">
-    <input ng-model="user.password" type="password" placeholder="Enter Password" class="form-control input-md">
+    <input ng-model="currentUser.password" type="password" placeholder="Enter Password" class="form-control input-md">
     
   </div>
 </div>
@@ -58,7 +68,7 @@
 <div class="form-group">
   <label class="col-md-4 control-label" for="passwordinput">Password Input</label>
   <div class="col-md-4">
-    <input ng-model="user.password" type="password" placeholder="ReEnter Password" class="form-control input-md">
+    <input ng-model="currentUser.password" type="password" placeholder="ReEnter Password" class="form-control input-md">
     
   </div>
 </div>
@@ -89,7 +99,7 @@
 
 
 <div class="row" id = "footer">
-    <ul id="notifications">>
+    <ul id="notifications" class="list-group">
     </ul>
     
 </div> 

@@ -1,4 +1,4 @@
-angular.module('AdminCtrl', ['AdminService','UserService'])
+angular.module('AdminCtrl', [])
 .controller('AdminController', function ($scope, $rootScope,$location, AdminService, mySocket, UserService) {
  // $scope.inventory = {};
  console.log($rootScope.user,"toot scope");
@@ -7,7 +7,7 @@ angular.module('AdminCtrl', ['AdminService','UserService'])
     mySocket.on('notification', function (data) {
     console.log("in admin");
     $("#notifications").append(
-      '<li class="'+data.title+'"> <b>'+data.quantity+'</b> of a new item <b>'+data.name+'</b> was added to the inventory for: $<b>'+data.price+'</b></li>'
+      '<li class="list-group-item'+' '+data.title+'"> <b>'+data.quantity+'</b> of a new item <b>'+data.name+'</b> was added to the inventory for: $<b>'+data.price+'</b></li>'
       );
   });
   
@@ -17,7 +17,6 @@ angular.module('AdminCtrl', ['AdminService','UserService'])
     .then
     (
       function(response) {
-        console.logOut(response.data);
         $location.path('/login');
       },
       function(response) {
@@ -64,17 +63,18 @@ angular.module('AdminCtrl', ['AdminService','UserService'])
   $scope.addUSer = function() {
     console.log($rootScope.user,"toot scope");
     console.log($scope.user,"toot scope");
-    AdminService.addUser($scope.user)
+    AdminService.addUser($scope.currentUser)
     .then(
       function(r) {
         console.log(r.data);
-        
+        $scope.currentUser = [];
+        $scope.userAdded = true;
         //$scope.inventory = angular.copy(r.data);
-        alert('item saved');
+        //alert('item saved');
       },
       function () {
 
-        alert('failed');
+        //alert('failed');
       }
     );
   };
