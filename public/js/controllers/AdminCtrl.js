@@ -32,11 +32,10 @@ angular.module('AdminCtrl', [])
         console.log(response.data, "from user service post");
           if(response.data.message) {
               console.log(response.data.message);
+              $location.path('/login');
           }
           else {
-
               switch(response.data.role) {
-
                   case 1:
                       $location.path('/admin');
                       break;
@@ -61,8 +60,6 @@ angular.module('AdminCtrl', [])
 
 
   $scope.addUSer = function() {
-    console.log($rootScope.user,"toot scope");
-    console.log($scope.user,"toot scope");
     AdminService.addUser($scope.currentUser)
     .then(
       function(r) {

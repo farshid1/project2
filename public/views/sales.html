@@ -20,7 +20,7 @@
         <input  placeholder="Search Customer"
                 ng-model="customerQuery" 
                 type="text"
-                typeahead="suggestion.firstName+' '+suggestion.lastName for suggestion in searchCustomers($viewValue)"
+                typeahead="suggestion.firstName+' '+suggestion.lastName for suggestion in searchCustomers($viewValue) | orderBy:customerQuery"
                 typeahead-editable="false"
                 typeahead-on-select="initiateNewOrder($item)"
                 typeahead-min-length="2"  
@@ -195,7 +195,8 @@
           <input  ng-model="query" 
                   type="text" 
                   ng-change="searchItem(query)" 
-                  class="form-control" 
+                  class="form-control"
+                  placeholder="Search Product" 
           />
         </div>
       </div>

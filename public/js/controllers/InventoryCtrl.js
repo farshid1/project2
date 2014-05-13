@@ -41,6 +41,7 @@ angular.module('InventoryCtrl', [])
         console.log(response.data, "from user service post");
           if(response.data.message) {
               console.log(response.data.message);
+              $location.path('/login');
           }
           else {
 
