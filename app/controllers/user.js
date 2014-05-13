@@ -22,7 +22,7 @@ function doesUserExist(req, res, callback) {
             console.log("User does not exist");
             callback(req);
             res.jsonp({
-                message: " The user has been added"
+                message: "The user has been added"
             });
         }
     });

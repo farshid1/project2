@@ -1,7 +1,7 @@
 angular.module('AdminCtrl', [])
-.controller('AdminController', function ($scope, $rootScope,$location, AdminService, mySocket, UserService) {
+.controller('AdminController', function ($scope, $rootScope, $location, $timeout, AdminService, mySocket, UserService) {
  // $scope.inventory = {};
- console.log($rootScope.user,"toot scope");
+ console.log($scope.currentUser,"current user scope");
   console.log($scope.user,"toot scope");
 
     mySocket.on('notification', function (data) {
@@ -26,6 +26,7 @@ angular.module('AdminCtrl', [])
   };
 
   $scope.init = function() {
+    console.log("tryiiiiing");
     UserService.postData({})
     .then(
       function(response) {
@@ -35,6 +36,7 @@ angular.module('AdminCtrl', [])
               $location.path('/login');
           }
           else {
+              $scope.currentUser = angular.copy(response.data);
               switch(response.data.role) {
                   case 1:
                       $location.path('/admin');
@@ -59,15 +61,26 @@ angular.module('AdminCtrl', [])
   };
 
 
-  $scope.addUSer = function() {
-    AdminService.addUser($scope.currentUser)
+  $scope.addUser = function(newUser) {
+    console.log(newUser);
+    AdminService.addUser(newUser)
     .then(
       function(r) {
         console.log(r.data);
-        $scope.currentUser = [];
+        $scope.newUser = [];
         $scope.userAdded = true;
-        //$scope.inventory = angular.copy(r.data);
-        //alert('item saved');
+        if (r.data.message === 'This user name already exists') {
+          $scope.message = r.data.message;
+          $scope.danger = true;
+        }
+        if (r.data.message === 'The user has been added') {
+          $scope.message = r.data.message;
+          $scope.success = true;
+        }
+        $timeout(function(){
+          $scope.userAdded = false;
+        }, 5000);
+        
       },
       function () {
 

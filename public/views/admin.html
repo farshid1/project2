@@ -1,6 +1,6 @@
 <div class="page-header">
    <h1>Welcome, 
-      <small style="color:#d9534f;">{{user.firstName +' '+ user.lastName}}</small>
+      <small style="color:#d9534f;">{{currentUser.firstName +' '+ currentUser.lastName}}</small>
    </h1>
    <div class="row" style="text-align:right">
   <a href="#" ng-click="logOut()" class="btn btn-default btn-danger btn-lg"><span class="glyphicon glyphicon-log-out"></span> Log Out</a>
@@ -9,11 +9,11 @@
 
 <div class="row" ng-init="init()">
   
-<div class="alert alert-success"
-      style="margin-top:20px" 
-      ng-if="userAdded" 
-      ng-animate="{enter: 'animate-enter', leave: 'animate-leave'}">New user has been added</div>
-<form class="form-horizontal">
+<div class="alert" ng-class="{'alert-success':success, 'alert-danger':danger}" style="margin-top:20px" ng-if="userAdded"> 
+  {{ message | uppercase }}
+</div>
+
+<form class="form-horizontal" ng-submit="addUser(newUser)">
 <fieldset>
 
 <!-- Form Name -->
@@ -23,7 +23,7 @@
 <div class="form-group">
   <label class="col-md-4 control-label" for="firstnametextinput">Enter First Name</label>  
   <div class="col-md-4">
-  <input ng-model="currentUser.firstName" type="text" placeholder="First Name" class="form-control input-md">
+  <input ng-model="newUser.firstName" type="text" placeholder="First Name" class="form-control input-md">
     
   </div>
 </div>
@@ -32,7 +32,7 @@
 <div class="form-group">
   <label class="col-md-4 control-label" for="lastnametextinput">Enter Last Name</label>  
   <div class="col-md-4">
-  <input ng-model="currentUser.lastName" type="text" placeholder="Last Name" class="form-control input-md">
+  <input ng-model="newUser.lastName" type="text" placeholder="Last Name" class="form-control input-md">
     
   </div>
 </div>
@@ -41,7 +41,7 @@
 <div class="form-group">
   <label class="col-md-4 control-label" for="phonetextinput">Enter Phone Number</label>  
   <div class="col-md-4">
-  <input ng-model="currentUser.phoneNumber" type="text" placeholder="Phone Number" class="form-control input-md">
+  <input ng-model="newUser.phoneNumber" type="text" placeholder="Phone Number" class="form-control input-md">
     
   </div>
 </div>
@@ -50,7 +50,7 @@
 <div class="form-group">
   <label class="col-md-4 control-label" for="emailtextinput">Enter Email Address</label>  
   <div class="col-md-4">
-  <input ng-model="currentUser.username" type="text" placeholder="Email Address" class="form-control input-md">
+  <input ng-model="newUser.username" type="text" placeholder="Email Address" class="form-control input-md">
     
   </div>
 </div>
@@ -59,7 +59,7 @@
 <div class="form-group">
   <label class="col-md-4 control-label" for="repasswordinput">Password Input</label>
   <div class="col-md-4">
-    <input ng-model="currentUser.password" type="password" placeholder="Enter Password" class="form-control input-md">
+    <input ng-model="newUser.password" type="password" placeholder="Enter Password" class="form-control input-md">
     
   </div>
 </div>
@@ -68,7 +68,7 @@
 <div class="form-group">
   <label class="col-md-4 control-label" for="passwordinput">Password Input</label>
   <div class="col-md-4">
-    <input ng-model="currentUser.password" type="password" placeholder="ReEnter Password" class="form-control input-md">
+    <input ng-model="newUser.password" type="password" placeholder="ReEnter Password" class="form-control input-md">
     
   </div>
 </div>
@@ -77,7 +77,7 @@
 <div class="form-group">
   <label class="col-md-4 control-label" for="roleselectbasic">Select Role</label>
   <div class="col-md-4">
-    <select ng-model="currentUser.role" class="form-control">
+    <select ng-model="newUser.role" class="form-control">
       <option value="1">Admin</option>
       <option value="2">Sales</option>
       <option value="3">Inventory</option>
@@ -88,9 +88,8 @@
 
 <!-- Button -->
 <div class="form-group">
-  <label class="col-md-4 control-label" for="singlebutton">Single Button</label>
   <div class="col-md-4">
-    <button id="singlebutton"  class="btn btn-primary" ng-click="addUSer()">Sign Up</button>
+    <button id="singlebutton" type="submit"  class="btn btn-primary" >Add User</button>
   </div>
 </div>
 

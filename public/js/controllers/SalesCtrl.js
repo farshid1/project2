@@ -2,24 +2,6 @@ angular.module('SalesCtrl', [])
     .controller('SalesController',
         function ($scope, $http, $rootScope, $location, limitToFilter, SalesService, UserService, mySocket) {
 
-            // $scope.products = [];
-            // $scope.orders = [];
-            // $scope.newCustomerMaster = {};
-            // $scope.editCustomer = {};
-            // $scope.customerId = '';
-            // $scope.customers = [];
-            // $scope.customer = {};
-            // $scope.numLimit = 10;
-            // $scope.showAddCustomer = false;
-            // $scope.showEditCustomer = false;
-            // $scope.showResult = false;
-            // $scope.showOrder = false;
-            // $scope.disableAddButton = false;
-            // $scope.showSearchProduct = false;
-            // $scope.showSearchCustomer = true;
-            // $scope.showCustomerDetails = false;
-            // $scope.showPendingOrders = true;
-            // $scope.orderFinalized = false;
 
             //mySocket.emit('my other event', { my: 'data' });
             mySocket.on('notification', function (data) {
@@ -40,6 +22,7 @@ angular.module('SalesCtrl', [])
                                 $location.path('/login');
                             } else {
 
+                                $scope.currentUser = angular.copy(response.data);
                                 switch (response.data.role) {
 
                                 case 1:

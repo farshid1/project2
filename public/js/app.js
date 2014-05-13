@@ -26,7 +26,7 @@ window.routes =
 };
 
 angular.module('inventoryApp', 
-	['ngRoute', 'appRoutes', 'btford.socket-io', 'ui.bootstrap', 'xeditable', 'SessionService', 'UserCtrl', 'InventoryCtrl', 'AdminCtrl', 'AdminService', 'SalesCtrl', 'InventoryService', 'SalesService', 'UserService', 'mySocket'])
+	['ngRoute', 'appRoutes', 'ngAnimate', 'btford.socket-io', 'ui.bootstrap', 'xeditable', 'SessionService', 'UserCtrl', 'InventoryCtrl', 'AdminCtrl', 'AdminService', 'SalesCtrl', 'InventoryService', 'SalesService', 'UserService', 'mySocket'])
 .run(function(editableOptions) {
   editableOptions.theme = 'bs3'; 
 

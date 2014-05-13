@@ -44,7 +44,7 @@ angular.module('InventoryCtrl', [])
               $location.path('/login');
           }
           else {
-
+              $scope.currentUser = angular.copy(response.data);
               switch(response.data.role) {
 
                   case 1:
